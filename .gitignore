@@ -1,0 +1,7 @@
+*.swp
+*.pyc
+build
+*.out
+.sconf_temp
+.sconsign.dblite
+config.log

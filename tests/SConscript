@@ -1,0 +1,32 @@
+import sys
+import os
+
+Import('env')
+
+tests_env = env.Clone()
+
+libs = [
+    "emulator",
+    "stdc++",
+]
+
+if sys.platform != "darwin":
+    libs += ['rt', 'pthread']
+
+if sys.platform == "linux2":
+    libs += ['resolv']
+
+
+tests_env.Append(LIBS = libs)
+
+td = []
+pd = []
+
+# Tests
+tests = [ ]
+for f in Glob('#tests/*_test.cc'):
+    tests.append(os.path.basename(f.rstr()[0:-3]))
+
+for t in tests:
+    td += tests_env.Program(t, t+".cc")
+
