@@ -29,7 +29,7 @@ opts = Variables('Local.sc')
 
 opts.AddVariables(
     ("CC", "C Compiler", "cc"),
-    ("CXX", "C++ Compiler", "clang++"),
+    ("CXX", "C++ Compiler", "clang++ -g"),
     ("AS", "Assembler"),
     ("NUMCPUS", "Number of CPUs to use for build (0 means auto)", 0, None, int),
     EnumVariable("BUILDTYPE", "Build type", "RELEASE", ["RELEASE", "DEBUG", "PERF"]),

@@ -65,9 +65,9 @@ public:
         current_inst = inst[0];
     }
     void run(){
-        Clock * clock = new Clock(100000);
+        Clock * clock = new Clock(100);
         cout << to_string() << endl;
-        while(pc != inst.size() * 2) {
+        while(pc != (inst.size() + 1) * 2) {
             step();
             clock->tick();
         }

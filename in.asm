@@ -1,1 +1,6 @@
 INX
+INX
+INX
+INX
+INX
+ADC #$10
