@@ -24,22 +24,34 @@ public:
     };
 };
 
-
+// 2 or 3 byte instruction
 class INC : public Instruction {
 private:
     Emulator * emu;
     Reg target_reg;
+    int byte_length;
 public:
     INC(Reg target, Emulator * emu) : emu(emu), target_reg(target) {
-        CYCLES = 1;
+        CYCLES = 10;
         current_cycle = CYCLES;
+        // FIGURE OUT BYTE LENGTH
+        byte_length = 2;
     };
     void execute()
     {
         cout << "EXECUTE" << endl;
         (*emu->quick_map[target_reg])++;
+        *emu->quick_map[target_reg] += byte_length;
         reset();
     };
+};
+
+class Label : public Instruction {
+    string l;
+private:
+    Label(string value) : l(value) {};
+public:
+    void execute(){};
 };
 
 class T: public Instruction {
@@ -51,7 +63,11 @@ private:
     Reg target;
 public:
     T(Reg target, Reg source, Emulator * emu) : emu(emu), 
-       source(source), target(target) {};
+       source(source), target(target) 
+    {
+        CYCLES = 1;
+        current_cycle = CYCLES;
+    };
     void execute()
     {
         *emu->quick_map[target] = *emu->quick_map[source];

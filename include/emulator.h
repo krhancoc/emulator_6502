@@ -48,9 +48,11 @@ public:
     };
 };
 
+
 class Emulator {
     vector<Instruction *> inst;
     Instruction * current_inst;
+    unordered_map<string, uint16_t> labels;
     Memory * mem = new Memory();
     uint16_t pc = 0;
     uint8_t a = 0; 
@@ -60,11 +62,22 @@ public:
     unordered_map<Reg, uint8_t *> quick_map {
         {Reg::X, &x}, {Reg::A, &a}, {Reg::Y, &y}
     };
-    void attach(vector<Instruction *> i) {
+    void jump_to(uint16_t value) 
+    {
+        pc = value;
+    }
+    void attach(vector<Instruction *> i) 
+    {
+        vector<Instruction *> final_inst;
+        for (auto inst : i) {
+            if (dynamic_cast<Label *>(i) != nullptr;
+            
+        }
         inst = i;
         current_inst = inst[0];
     }
-    void run(){
+    void run()
+    {
         Clock * clock = new Clock(100);
         cout << to_string() << endl;
         while(pc != (inst.size() + 1) * 2) {
