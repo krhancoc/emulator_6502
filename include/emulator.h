@@ -29,7 +29,6 @@ public:
         clock_t t = clock();
         while(true) {
             if((clock() - t) >= speed) {
-                cout << "Tick\n" << endl;
                 break;
             }
         } 
@@ -50,8 +49,8 @@ public:
 
 
 class Emulator {
-    vector<Instruction *> inst;
-    Instruction * current_inst;
+    vector<Instruction *> program;
+    uint16_t current_inst  = 0;
     unordered_map<string, uint16_t> labels;
     Memory * mem = new Memory();
     uint16_t pc = 0;
@@ -62,25 +61,17 @@ public:
     unordered_map<Reg, uint8_t *> quick_map {
         {Reg::X, &x}, {Reg::A, &a}, {Reg::Y, &y}
     };
-    void jump_to(uint16_t value) 
+
+    void increment_pc(uint16_t val)
     {
-        pc = value;
+        pc += val;
     }
-    void attach(vector<Instruction *> i) 
-    {
-        vector<Instruction *> final_inst;
-        for (auto inst : i) {
-            if (dynamic_cast<Label *>(i) != nullptr;
-            
-        }
-        inst = i;
-        current_inst = inst[0];
-    }
+
     void run()
     {
         Clock * clock = new Clock(100);
         cout << to_string() << endl;
-        while(pc != (inst.size() + 1) * 2) {
+        while(current_inst < program.size()) {
             step();
             clock->tick();
         }
@@ -88,7 +79,9 @@ public:
     };
 
     void step();
-
+    void attach(string filename);
+    void jump_to(string label);
+        
     string to_string()
     {
        stringstream ss; 
@@ -99,7 +92,7 @@ public:
        return ss.str();
     };
     void reset(){
-        pc = a = x = y = 0;
+        pc = a = x = y = current_inst = 0;
     };
 
 };

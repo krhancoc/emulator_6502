@@ -1,7 +1,8 @@
+JMP end
 INX
 INX
 INX
 INX
+end:
 INX
-jump_label:
-ADC #$10
+

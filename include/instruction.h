@@ -6,10 +6,16 @@
 
 class Instruction {
 protected:
-    int CYCLES = 1;
-    int current_cycle = CYCLES;
+    Emulator * emu;
+    int CYCLES = 0;
+    int current_cycle = 0;
+    uint16_t byte_length = 0;
 public:
-    virtual void execute()=0;
+    virtual void run()=0;
+    void execute() {
+        run();
+        emu->increment_pc(byte_length);
+    };
     int get_cycle() 
     {
         return current_cycle;
@@ -22,55 +28,8 @@ public:
     {
         current_cycle = CYCLES;
     };
-};
-
-// 2 or 3 byte instruction
-class INC : public Instruction {
-private:
-    Emulator * emu;
-    Reg target_reg;
-    int byte_length;
-public:
-    INC(Reg target, Emulator * emu) : emu(emu), target_reg(target) {
-        CYCLES = 10;
-        current_cycle = CYCLES;
-        // FIGURE OUT BYTE LENGTH
-        byte_length = 2;
-    };
-    void execute()
-    {
-        cout << "EXECUTE" << endl;
-        (*emu->quick_map[target_reg])++;
-        *emu->quick_map[target_reg] += byte_length;
-        reset();
-    };
-};
-
-class Label : public Instruction {
-    string l;
-private:
-    Label(string value) : l(value) {};
-public:
-    void execute(){};
-};
-
-class T: public Instruction {
-private:
-    Emulator * emu;
-    int CYCLES = 1;
-    int current_cycle = CYCLES;
-    Reg source;
-    Reg target;
-public:
-    T(Reg target, Reg source, Emulator * emu) : emu(emu), 
-       source(source), target(target) 
-    {
-        CYCLES = 1;
-        current_cycle = CYCLES;
-    };
-    void execute()
-    {
-        *emu->quick_map[target] = *emu->quick_map[source];
+    uint16_t get_byte_length() {
+        return byte_length;
     }
 };
 
@@ -93,17 +52,79 @@ public:
 class Register : public Value {
 };
 
-class ADC: public Instruction {
+class JMP: public Instruction {
 private:
-    Emulator * emu;
-        Value * value;
-    Reg accumulator = Reg::A;
+    string label;
 public:
-    ADC(Value * v, Emulator * emu) : emu(emu), value(v) {
+    JMP(string label, Emulator * e) : label(label) {
+        emu = e;
         CYCLES = 1;
         current_cycle = CYCLES;
+        byte_length = 2;
     };
-    void execute()
+    void run()
+    {
+        emu->jump_to(label);
+    }
+};
+
+// 2 or 3 byte instruction
+class INC : public Instruction {
+private:
+    Reg target_reg;
+public:
+    INC(Reg target, Emulator * e) : target_reg(target) {
+        emu = e;
+        CYCLES = 1;
+        current_cycle = CYCLES;
+        byte_length = 2;
+    };
+    void run()
+    {
+        (*emu->quick_map[target_reg])++;
+        reset();
+    };
+};
+
+class Label : public Instruction {
+private:
+public:
+    Label(string value) : label(value) {};
+    string label;
+    void run(){};
+};
+
+class T: public Instruction {
+private:
+    Reg source;
+    Reg target;
+public:
+    T(Reg target, Reg source, Emulator * e) : source(source), target(target) 
+    {
+        emu = e;
+        CYCLES = 1;
+        current_cycle = CYCLES;
+        byte_length = 2;
+    };
+    void run()
+    {
+        *emu->quick_map[target] = *emu->quick_map[source];
+    }
+};
+
+
+class ADC: public Instruction {
+private:
+    Value * value;
+    Reg accumulator = Reg::A;
+public:
+    ADC(Value * v, Emulator * e) : value(v) {
+        emu = e;
+        CYCLES = 1;
+        current_cycle = CYCLES;
+        byte_length = 2;
+    };
+    void run()
     {
         *emu->quick_map[accumulator] = *emu->quick_map[accumulator] + value->get_value();
     }
