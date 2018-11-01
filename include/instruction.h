@@ -15,6 +15,7 @@ public:
     void execute() {
         run();
         emu->increment_pc(byte_length);
+        reset();
     };
     int get_cycle() 
     {

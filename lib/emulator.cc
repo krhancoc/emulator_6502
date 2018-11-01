@@ -91,7 +91,6 @@ void Emulator::step(){
     } else {
         inst->execute();
         current_inst++;
-        cout << current_inst << endl;
     }
 };
 void Emulator::attach(string filename) 
