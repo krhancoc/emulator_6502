@@ -1,0 +1,7 @@
+JMP end
+INX
+INX
+end:
+INA
+INX
+INX

@@ -11,6 +11,7 @@ protected:
     int current_cycle = 0;
     uint16_t byte_length = 0;
 public:
+    virtual ~Instruction() = default;
     virtual void run()=0;
     void execute() {
         run();
@@ -130,7 +131,4 @@ public:
         *emu->quick_map[accumulator] = *emu->quick_map[accumulator] + value->get_value();
     }
 };
-
-
-
 #endif

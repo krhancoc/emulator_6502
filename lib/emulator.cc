@@ -86,17 +86,20 @@ Instruction * parse(string line, Emulator * emu)
 
 void Emulator::step(){
     Instruction * inst = program[current_inst];
-    if (inst->get_cycle()) {
+    while(inst->get_cycle()) {
         inst->dec_cycle();
-    } else {
-        inst->execute();
-        current_inst++;
+        this->clock->tick();
     }
+    inst->execute();
+    current_inst++;
 };
 void Emulator::attach(string filename) 
 {
     string line;
     ifstream in;
+
+    reset();
+
     in.open(filename);    
     vector<Instruction *> instructions;
     if (in.is_open()) {
@@ -122,19 +125,26 @@ void Emulator::attach(string filename)
             program.push_back(inst);
         }
     };
-    
-    reset();
 }
 
 void Emulator::jump_to(string label) 
 {
     current_inst = labels[label];
     // WE WILL INCREMENT THIS AFTER WE EXECUTE AND IT PUSHES IT FORWARD ONE
-    current_inst--;
     pc = 0;
-    for (int i = 0; i <= current_inst; i++) {
+    current_inst--;
+    for (int i = 0; i < current_inst; i++) {
         Instruction * inst = program[i];
         uint16_t byte_length = inst->get_byte_length();
         increment_pc(byte_length);
     }
 }
+
+void Emulator::reset(){
+    pc = a = x = y = current_inst = 0;
+    for (auto i: program) {
+        delete i;
+    }
+    program.clear();
+};
+

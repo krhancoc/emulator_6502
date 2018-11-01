@@ -1,8 +1,0 @@
-JMP end
-INX
-INX
-INX
-INX
-end:
-INX
-

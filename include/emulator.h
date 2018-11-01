@@ -29,6 +29,7 @@ public:
         clock_t t = clock();
         while(true) {
             if((clock() - t) >= speed) {
+                cout << "TICK" << endl;
                 break;
             }
         } 
@@ -37,9 +38,8 @@ public:
 };
 
 class Memory {
-private:
-    char * internal_memory[MAX_MEMORY];
 public:
+    char * internal_memory[MAX_MEMORY];
     void write(address a){};
     uint8_t read(address a)
     {
@@ -47,6 +47,13 @@ public:
     };
 };
 
+struct state {
+    uint16_t pc;
+    uint8_t a;
+    uint8_t x;
+    uint8_t y;
+    char * internal_memory;
+};
 
 class Emulator {
     vector<Instruction *> program;
@@ -58,6 +65,7 @@ class Emulator {
     uint8_t x = 0; 
     uint8_t y = 0; 
 public:
+    Clock * clock = new Clock(1);
     unordered_map<Reg, uint8_t *> quick_map {
         {Reg::X, &x}, {Reg::A, &a}, {Reg::Y, &y}
     };
@@ -67,20 +75,24 @@ public:
         pc += val;
     }
 
-    void run()
+    state run()
     {
-        Clock * clock = new Clock(100);
-        cout << to_string() << endl;
         while(current_inst < program.size()) {
             step();
-            clock->tick();
         }
-        cout << to_string() << endl;
+        return state {
+            .pc = pc,
+            .a = a,
+            .x = x,
+            .y = y,
+            .internal_memory = *mem->internal_memory
+        };
     };
 
     void step();
     void attach(string filename);
     void jump_to(string label);
+    void reset();
         
     string to_string()
     {
@@ -91,11 +103,7 @@ public:
        ss << "Y : " << static_cast<unsigned>((unsigned char) y) << endl;
        return ss.str();
     };
-    void reset(){
-        pc = a = x = y = current_inst = 0;
-    };
 
 };
-
 #endif
 

@@ -29,7 +29,7 @@ opts = Variables('Local.sc')
 
 opts.AddVariables(
     ("CC", "C Compiler", "cc"),
-    ("CXX", "C++ Compiler", "clang++ -g"),
+    ("CXX", "C++ Compiler", "clang++"),
     ("AS", "Assembler"),
     ("NUMCPUS", "Number of CPUs to use for build (0 means auto)", 0, None, int),
     EnumVariable("BUILDTYPE", "Build type", "RELEASE", ["RELEASE", "DEBUG", "PERF"]),
@@ -49,6 +49,9 @@ opts.AddVariables(
 env = Environment(options = opts,
                   tools = ['default'],
                   ENV = os.environ)
+
+env["BUILDTYPE"] = "DEBUG"
+
 Help("""TARGETS:
 scons               Build\n""")
 Help(opts.GenerateHelpText(env))
