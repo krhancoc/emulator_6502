@@ -52,6 +52,15 @@ public:
 };
 
 class Register : public Value {
+private:
+    Reg target;
+    Emulator * emu;
+public:
+    Register(Reg target, Emulator *e) : target(target), emu(e) {};
+    uint8_t get_value()
+    {
+        return *emu->quick_map[target];
+    }
 };
 
 class JMP: public Instruction {
