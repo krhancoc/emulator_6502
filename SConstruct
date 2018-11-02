@@ -166,6 +166,7 @@ Export('env')
 # Set compile options for binaries
 env.Append(CPPPATH = ['#include', '#.'])
 env.Append(LIBPATH = ['#build/lib/'])
+env.Append(LIBS = ["ncurses"])
 
 if sys.platform != "win32" and sys.platform != "darwin":
     env.Append(CPPFLAGS = ['-pthread'])

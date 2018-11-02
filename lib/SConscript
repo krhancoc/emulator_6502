@@ -1,7 +1,8 @@
 Import('env')
 
 src = [
-    "emulator.cc"
+    "emulator.cc",
+    "terminal.cc"
 ]
 
 env.StaticLibrary("emulator", src)

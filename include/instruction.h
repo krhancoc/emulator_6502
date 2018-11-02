@@ -10,6 +10,8 @@ protected:
     int CYCLES = 0;
     int current_cycle = 0;
     uint16_t byte_length = 0;
+    string line = "";
+    vector<string> code_window;
 public:
     virtual ~Instruction() = default;
     virtual void run()=0;
@@ -30,8 +32,18 @@ public:
     {
         current_cycle = CYCLES;
     };
+    string to_string() 
+    {
+        return line;
+    }
     uint16_t get_byte_length() {
         return byte_length;
+    }
+    vector<string> get_window() {
+        return code_window;
+    }
+    void set_window(vector<string> w) {
+        code_window = w;
     }
 };
 
@@ -67,7 +79,8 @@ class JMP: public Instruction {
 private:
     string label;
 public:
-    JMP(string label, Emulator * e) : label(label) {
+    JMP(string label, Emulator * e, string l) : label(label) {
+        line = l;
         emu = e;
         CYCLES = 1;
         current_cycle = CYCLES;
@@ -84,8 +97,9 @@ class INC : public Instruction {
 private:
     Reg target_reg;
 public:
-    INC(Reg target, Emulator * e) : target_reg(target) {
+    INC(Reg target, Emulator * e, string l) : target_reg(target) {
         emu = e;
+        line = l;
         CYCLES = 1;
         current_cycle = CYCLES;
         byte_length = 2;
@@ -100,7 +114,10 @@ public:
 class Label : public Instruction {
 private:
 public:
-    Label(string value) : label(value) {};
+    Label(string value, string l) : label(value)
+    {
+        line = l;
+    };
     string label;
     void run(){};
 };
@@ -110,8 +127,9 @@ private:
     Reg source;
     Reg target;
 public:
-    T(Reg target, Reg source, Emulator * e) : source(source), target(target) 
+    T(Reg target, Reg source, Emulator * e, string l) : source(source), target(target) 
     {
+        line = l;
         emu = e;
         CYCLES = 1;
         current_cycle = CYCLES;
@@ -129,7 +147,8 @@ private:
     Value * value;
     Reg accumulator = Reg::A;
 public:
-    ADC(Value * v, Emulator * e) : value(v) {
+    ADC(Value * v, Emulator * e, string l) : value(v) {
+        line = l;
         emu = e;
         CYCLES = 1;
         current_cycle = CYCLES;

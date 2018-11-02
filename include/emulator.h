@@ -74,9 +74,16 @@ public:
     {
         pc += val;
     }
+    Instruction * get_current_inst() {
+        if (current_inst >= program.size()) {
+            return nullptr;         
+        }
+        return program[current_inst];
+    }
 
     state run()
     {
+
         while(current_inst < program.size()) {
             step();
         }
@@ -89,7 +96,7 @@ public:
         };
     };
 
-    void step();
+    int step();
     void attach(string filename);
     void jump_to(string label);
     void reset();
