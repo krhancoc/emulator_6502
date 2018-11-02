@@ -1,4 +1,5 @@
 #include <ncurses.h>
+#include <panel.h>
 #include <sstream>
 
 #include "../include/terminal.h"
@@ -42,31 +43,46 @@ void Terminal::redraw() {
 
 void Terminal::run()
 {
-    char input;
-    int stopped = 0;
-    while(!stopped) {
 
-        redraw();
-        input = getch();
-        if (input == 'q') {
-            break;
-        } 
-        switch (input) {
-            case 's':
-                stopped = emu->step();
-                break;
-            case 'r':
-                emu->run();
-                stopped = 1;
-                break;
-        }
-    }
-    redraw();
-    printw("Program complete\n");
-    printw("Hit any character to quit\n");
-    refresh();
+    clear();
+    reg = newwin(10, 40, 1, 1);
+    code = newwin(10, 40, 1, 4);
+    memory = newwin(10, 80, 10, 1);
+
+    box(reg, 0, 0);
+    box(code, 0, 0);
+    box(memory, 0, 0);
+
+    reg_panel = new_panel(reg);
+    code_panel = new_panel(code);
+    memory_panel = new_panel(memory);
+    update_panels();
+    doupdate();
+
+    // char input;
+    // int stopped = 0;
+    // while(!stopped) {
+
+        // redraw();
+        // input = getch();
+        // if (input == 'q') {
+            // break;
+        // } 
+        // switch (input) {
+            // case 's':
+                // stopped = emu->step();
+                // break;
+            // case 'r':
+                // emu->run();
+                // stopped = 1;
+                // break;
+        // }
+    // }
+    // redraw();
+    // printw("Program complete\n");
+    // printw("Hit any character to quit\n");
+    // refresh();
     getch();
-
 }
 
 
