@@ -15,6 +15,7 @@ private:
     PANEL * reg_panel;
     PANEL * code_panel;
     PANEL * memory_panel;
+    uint16_t memory_view = 0x0000;
     int stopped = 0;
     Emulator * emu = new Emulator();
 public:

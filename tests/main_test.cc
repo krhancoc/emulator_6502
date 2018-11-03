@@ -18,6 +18,6 @@ int main()
     state check = emu->run();   
     ass(check, 12, 1, 2, 0);
     cout << emu->to_string() << endl;
-    cout << emu->mem->to_string() << endl;
+    cout << emu->mem->to_string(0x0100) << endl;
     return 0;
 };

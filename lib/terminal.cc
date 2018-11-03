@@ -8,21 +8,28 @@
 void Terminal::start()
 {
     stringstream ss;
-
+    string filename;
+    char inputbuffer[256]; 
     initscr();        
+start:
     printw("File name: ");
     refresh();
-    char inputbuffer[256]; 
     getstr(inputbuffer);
-    string filename;
     ss << inputbuffer;
     ss >> filename;
     clear();
     emu->attach(filename);
-    printw("Press s to start...\n");
-    char c = getch(); 
-    if (c == 's') {
-        run();
+    while(true) {
+        printw("Press s to start, q to quit, or a to attach another program\n");
+        char c = getch(); 
+        if (c == 's') {
+            run();
+        } else if(c == 'q') {
+            break;
+        } else if (c == 'a') {
+            clear();
+            goto start;
+        }
     }
     endwin();
 }
@@ -61,7 +68,7 @@ void Terminal::redraw_memory()
     wclear(memory);
     box(memory_border, 0, 0);
 
-    wprintw(memory, emu->mem->to_string().c_str());
+    wprintw(memory, emu->mem->to_string(memory_view).c_str());
 
     wnoutrefresh(memory_border);
     wnoutrefresh(memory);

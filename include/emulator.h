@@ -51,12 +51,17 @@ public:
     {
         return 0;
     };
-    string to_string(){
+    string to_string(uint16_t start){
         // 2 * 16 , 2 bytes per word, 16 words per line;
-        stringstream ss;
-        uint16_t lines = (MAX_MEMORY / (MAX_PER_LINE)); 
 
-        for(uint16_t i = 0; i < lines; i++) {
+        stringstream gethex;
+        int x;
+        x = start / 16;
+
+        uint16_t lines = (MAX_MEMORY / (MAX_PER_LINE)); 
+        stringstream ss;
+
+        for(uint16_t i = x; i < lines && i < x + 10; i++) {
             ss << "0x" << setfill('0') << setw(4) << hex << (i * MAX_PER_LINE) << ": ";
             for(int t = 0; t < MAX_PER_LINE; t++) {
                 ss << setw(2);
