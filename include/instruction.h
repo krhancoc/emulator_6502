@@ -3,7 +3,6 @@
 
 #include "emulator.h"
 
-
 class Instruction {
 protected:
     Emulator * emu;
@@ -48,19 +47,22 @@ public:
 };
 
 class Value {
+protected:
+    word value;
 public:
-    virtual uint8_t get_value()=0;
+    Value() : value(0) {}
+    Value(word data) : value(data) {}
+    virtual word get_value() { return value; } 
+    virtual void set_value(word data) { value = data; }
+    // We need to only overload set_value once if all versions end up
+    // calling the one above.
+    virtual void set_value(Value *val) { set_value(val->get_value()); }
 };
 
 class Constant : public Value {
-    uint8_t value;
 public:
-    Constant(uint8_t val) : value(val) {};
-    uint8_t get_value() 
-    {
-        return value;
-    }
-    
+    Constant(word data) : Value(data) {};
+    void set_value(word data) {};
 };
 
 class Register : public Value {
@@ -69,47 +71,10 @@ private:
     Emulator * emu;
 public:
     Register(Reg target, Emulator *e) : target(target), emu(e) {};
-    uint8_t get_value()
-    {
-        return *emu->quick_map[target];
-    }
+    word get_value() { return *emu->quick_map[target]; }
+    void set_value(word data) { *emu->quick_map[target] = data; }
 };
 
-class JMP: public Instruction {
-private:
-    string label;
-public:
-    JMP(string label, Emulator * e, string l) : label(label) {
-        line = l;
-        emu = e;
-        CYCLES = 1;
-        current_cycle = CYCLES;
-        byte_length = 2;
-    };
-    void run()
-    {
-        emu->jump_to(label);
-    }
-};
-
-// 2 or 3 byte instruction
-class INC : public Instruction {
-private:
-    Reg target_reg;
-public:
-    INC(Reg target, Emulator * e, string l) : target_reg(target) {
-        emu = e;
-        line = l;
-        CYCLES = 1;
-        current_cycle = CYCLES;
-        byte_length = 2;
-    };
-    void run()
-    {
-        (*emu->quick_map[target_reg])++;
-        reset();
-    };
-};
 
 class Label : public Instruction {
 private:
@@ -141,7 +106,6 @@ public:
     }
 };
 
-
 class ADC: public Instruction {
 private:
     Value * value;
@@ -159,4 +123,41 @@ public:
         *emu->quick_map[accumulator] = *emu->quick_map[accumulator] + value->get_value();
     }
 };
+
+// 2 or 3 byte instruction
+class INC : public Instruction {
+private:
+    Reg target_reg;
+public:
+    INC(Reg target, Emulator * e, string l) : target_reg(target) {
+        emu = e;
+        line = l;
+        CYCLES = 1;
+        current_cycle = CYCLES;
+        byte_length = 2;
+    };
+    void run()
+    {
+        (*emu->quick_map[target_reg])++;
+        reset();
+    };
+};
+
+class JMP: public Instruction {
+private:
+    string label;
+public:
+    JMP(string label, Emulator * e, string l) : label(label) {
+        line = l;
+        emu = e;
+        CYCLES = 1;
+        current_cycle = CYCLES;
+        byte_length = 2;
+    };
+    void run()
+    {
+        emu->jump_to(label);
+    }
+};
+
 #endif
