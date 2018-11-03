@@ -17,6 +17,7 @@ using namespace std;
 
 enum class Reg { X, Y, A};
 typedef uint16_t address;
+typedef uint8_t word;
 
 
 //FORWARD DEC
@@ -42,15 +43,13 @@ public:
 
 class Memory {
 public:
-    address internal_memory[MAX_MEMORY];
+    word internal_memory[MAX_MEMORY];
     Memory() {
         memset(internal_memory, 0, MAX_MEMORY);
     }
-    void write(address a){};
-    uint8_t read(address a)
-    {
-        return 0;
-    };
+    void write(address a, word data){ internal_memory[a] = data; };
+    word read(address a) { return internal_memory[a]; }
+
     string to_string(uint16_t start){
         // 2 * 16 , 2 bytes per word, 16 words per line;
 
@@ -65,7 +64,7 @@ public:
             ss << "0x" << setfill('0') << setw(4) << hex << (i * MAX_PER_LINE) << ": ";
             for(int t = 0; t < MAX_PER_LINE; t++) {
                 ss << setw(2);
-                address c = internal_memory[(i * MAX_PER_LINE) + t];
+                word c = internal_memory[(i * MAX_PER_LINE) + t];
                 ss << hex << c;
                 ss << " ";
             }
@@ -76,25 +75,25 @@ public:
 };
 
 struct state {
-    uint16_t pc;
-    uint8_t a;
-    uint8_t x;
-    uint8_t y;
-    address * internal_memory;
+    address pc;
+    word a;
+    word x;
+    word y;
+    word *internal_memory;
 };
 
 class Emulator {
     vector<Instruction *> program;
-    uint16_t current_inst  = 0;
-    unordered_map<string, uint16_t> labels;
-    uint16_t pc = 0;
-    uint8_t a = 0; 
-    uint8_t x = 0; 
-    uint8_t y = 0; 
+    address current_inst  = 0;
+    unordered_map<string, address> labels;
+    address pc = 0;
+    word a = 0; 
+    word x = 0; 
+    word y = 0; 
 public:
     Memory * mem = new Memory();
     Clock * clock = new Clock(1);
-    unordered_map<Reg, uint8_t *> quick_map {
+    unordered_map<Reg, word *> quick_map {
         {Reg::X, &x}, {Reg::A, &a}, {Reg::Y, &y}
     };
 
