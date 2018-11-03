@@ -126,9 +126,13 @@ void Emulator::attach(string filename)
         vector<string> code_window;
         Instruction * inst = instructions[i];
         size_t start = int (i - 2) > 0  ? i - 2: 0;
-        for(size_t t = start; t < instructions.size() && t < start + 4; t++) {
+        for(size_t t = start; t < instructions.size() && t < start + 5; t++) {
             Instruction * inst = instructions[t];
-            code_window.push_back(inst->to_string());
+            if (t == i) {
+                code_window.push_back(">>" + inst->to_string());
+            } else {
+                code_window.push_back(inst->to_string());
+            }
         }
         inst->set_window(code_window);
         Label * p = dynamic_cast<Label *>(inst);

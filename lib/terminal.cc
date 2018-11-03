@@ -28,60 +28,74 @@ void Terminal::start()
 }
 
 void Terminal::redraw() {
-    clear();
-    printw(emu->to_string().c_str());
+    wclear(reg);
+    wclear(code);
+    wclear(memory);
+    box(reg_border, 0, 0);
+    box(code_border, 0, 0);
+    box(memory_border, 0, 0);
+    wprintw(reg, emu->to_string().c_str());
     Instruction * inst = emu->get_current_inst();
     if (inst != nullptr) {
         vector<string> window = inst->get_window();
         for (const auto &w: window) {
-            printw(w.c_str()); 
-            printw("\n"); 
+            wprintw(code, w.c_str()); 
+            wprintw(code, "\n"); 
         }
     }
-    refresh();
-}
+    wnoutrefresh(reg_border);
+    wnoutrefresh(code_border);
+    wnoutrefresh(memory_border);
+    wnoutrefresh(reg);
+    wnoutrefresh(code);
+    wnoutrefresh(memory);
+    update_panels();
+    doupdate();
+    }
 
 void Terminal::run()
 {
-
     clear();
-    reg = newwin(10, 40, 1, 1);
-    code = newwin(10, 40, 1, 4);
-    memory = newwin(10, 80, 10, 1);
+    reg_border = newwin(12,42, 1, 1);
+    reg = newwin(10, 40, 2, 2);
+    code_border = newwin(12,42, 1, 43);
+    code = newwin(10, 40, 2, 44);
+    memory_border = newwin(12,84, 13, 1);
+    memory = newwin(10, 80, 14, 2);
 
-    box(reg, 0, 0);
-    box(code, 0, 0);
-    box(memory, 0, 0);
+    box(reg_border, 0, 0);
+    box(code_border, 0, 0);
+    box(memory_border, 0, 0);
 
     reg_panel = new_panel(reg);
     code_panel = new_panel(code);
     memory_panel = new_panel(memory);
     update_panels();
     doupdate();
+    
+    char input;
+    int stopped = 0;
+    while(!stopped) {
 
-    // char input;
-    // int stopped = 0;
-    // while(!stopped) {
-
-        // redraw();
-        // input = getch();
-        // if (input == 'q') {
-            // break;
-        // } 
-        // switch (input) {
-            // case 's':
-                // stopped = emu->step();
-                // break;
-            // case 'r':
-                // emu->run();
-                // stopped = 1;
-                // break;
-        // }
-    // }
-    // redraw();
-    // printw("Program complete\n");
-    // printw("Hit any character to quit\n");
-    // refresh();
+        redraw();
+        input = mvgetch(26, 1);
+        if (input == 'q') {
+                break;
+            } 
+            switch (input) {
+                case 's':
+                    stopped = emu->step();
+                    break;
+                case 'r':
+                    emu->run();
+                    stopped = 1;
+                    break;
+            }
+    }
+    clear();
+    printw("Program complete\n");
+    printw("Hit any character to quit\n");
+    refresh();
     getch();
 }
 

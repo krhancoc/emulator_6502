@@ -6,9 +6,12 @@
 #include "emulator.h"
 class Terminal {
 private:
+    WINDOW * reg_border;
     WINDOW * reg;
     WINDOW * code;
+    WINDOW * code_border;
     WINDOW * memory; 
+    WINDOW * memory_border; 
     PANEL * reg_panel;
     PANEL * code_panel;
     PANEL * memory_panel;
