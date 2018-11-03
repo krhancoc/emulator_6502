@@ -23,6 +23,9 @@ public:
     void start();
     void run();
     void redraw();
+    void redraw_reg();
+    void redraw_code();
+    void redraw_memory();
 };
 
 #endif

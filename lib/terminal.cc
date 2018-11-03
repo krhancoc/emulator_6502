@@ -27,15 +27,23 @@ void Terminal::start()
     endwin();
 }
 
-void Terminal::redraw() {
+void Terminal::redraw_reg() 
+{
     wclear(reg);
-    wclear(code);
-    wclear(memory);
     box(reg_border, 0, 0);
-    box(code_border, 0, 0);
-    box(memory_border, 0, 0);
+
     wprintw(reg, emu->to_string().c_str());
+
+    wnoutrefresh(reg_border);
+    wnoutrefresh(reg);
+}
+void Terminal::redraw_code() 
+{
+
+    wclear(code);
     Instruction * inst = emu->get_current_inst();
+    box(code_border, 0, 0);
+
     if (inst != nullptr) {
         vector<string> window = inst->get_window();
         for (const auto &w: window) {
@@ -43,15 +51,31 @@ void Terminal::redraw() {
             wprintw(code, "\n"); 
         }
     }
-    wnoutrefresh(reg_border);
+
     wnoutrefresh(code_border);
-    wnoutrefresh(memory_border);
-    wnoutrefresh(reg);
     wnoutrefresh(code);
+}
+
+void Terminal::redraw_memory()
+{
+    wclear(memory);
+    box(memory_border, 0, 0);
+
+    wprintw(memory, emu->mem->to_string().c_str());
+
+    wnoutrefresh(memory_border);
     wnoutrefresh(memory);
+
+}
+void Terminal::redraw() 
+{
+
+    redraw_reg();
+    redraw_code();
+    redraw_memory();
     update_panels();
     doupdate();
-    }
+}
 
 void Terminal::run()
 {
