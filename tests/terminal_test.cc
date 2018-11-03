@@ -2,6 +2,7 @@
 
 int main()
 {
-    Terminal * term = new Terminal();
-    term->start();
+    Terminal * s = new Terminal();
+    s->start();
+
 }
