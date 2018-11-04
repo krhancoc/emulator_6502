@@ -1,14 +1,24 @@
-#include <string>
+#include <chrono>
 #include <fstream>
+#include <functional>
 #include <iostream>
-#include <vector>
-#include <sstream>
 #include <queue>
+#include <regex>
+#include <sstream>
+#include <string>
+#include <thread>
+#include <vector>
 
 #include "../include/emulator.h"
 #include "../include/instruction.h"
 
 using namespace std;
+
+address evaluate(Emulator *e )
+{
+	return 0;
+}
+
 
 Reg get_target(string arg) 
 {
@@ -57,7 +67,7 @@ Instruction * parse_two_arg(vector<string> arguments, Emulator * emu, string lin
     string inst = arguments[0];
     if (check_prefix("ADC", inst)) {
         Value * val = determine_value(arguments[1]);
-        return new ADC(val, emu, line);
+        return new ADC(emu, line);
     } else if (check_prefix("JMP", inst)) {
         return new JMP(arguments[1], emu, line);
     }
@@ -71,7 +81,27 @@ Instruction * parse(string line, Emulator * emu)
     istringstream args(line); while(getline(args, token, ' ')){
         arguments.push_back(token);
     }
+
+    // NOTE: Parsing only works if there is no whitespace at the beginning
+    // of the line. It can be solved by trimming, but C++ has
+    // no standard function for that. We can use Boost for that.
+    string command = line.substr(0, 3);
+
     
+    if (!command.compare("ADC")) {
+	    return new ADC(emu, line);
+    } else if (!command.compare("AND")) {
+    } else if (!command.compare("CMP")) {
+    } else if (!command.compare("EOR")) {
+    } else if (!command.compare("JMP")) {
+    } else if (!command.compare("LDA")) {
+    } else if (!command.compare("ORA")) {
+    } else if (!command.compare("SBC")) {
+    } else if (!command.compare("STA")) {
+    } else {
+//	throw("Invalid opcode");
+    }
+
     switch (arguments.size()) {
         case 1:
             return parse_one_arg(arguments, emu, line);

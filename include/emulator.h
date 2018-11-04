@@ -107,6 +107,9 @@ public:
         }
         return program[current_inst];
     }
+    word get_a() { return a; }
+    word get_x() { return x; }
+    word get_y() { return y; }
 
     state run()
     {
