@@ -121,11 +121,10 @@ int Emulator::step(){
         return 1;
     }
     Instruction * inst = program[current_inst];
-    while(inst->get_cycle()) {
-        inst->dec_cycle();
+    int execute_cost = inst->execute();
+    for (int i = 0; i < execute_cost; i++) {
         this->clock->tick();
     }
-    inst->execute();
     current_inst++;
     return 0;
 };

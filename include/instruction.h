@@ -13,8 +13,7 @@ enum addressing_mode {
 	ADDR_ZERA,
 	ADDR_ZERX,
 	ADDR_ZERY,
-};
-
+}; 
 // XXX Here temporarily
 static string prefix = "\\$";
 static string word_str = "([0-9a-fA-F]{2})";
@@ -120,10 +119,10 @@ public:
     Instruction(Emulator *e, string l): emu(e), line(l) {}
     virtual ~Instruction() = default;
     virtual void run()=0;
-    void execute() {
+    int execute() {
         run();
         emu->increment_pc(byte_length);
-        reset();
+        return current_cycle;
     };
     int get_cycle() 
     {
