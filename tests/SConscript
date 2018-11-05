@@ -8,6 +8,9 @@ tests_env = env.Clone()
 libs = [
     "emulator",
     "stdc++",
+    "ncurses",
+    "menu",
+    "panel"
 ]
 
 if sys.platform != "darwin":

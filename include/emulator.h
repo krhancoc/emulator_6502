@@ -51,7 +51,6 @@ public:
     word read(address a) { return internal_memory[a]; }
 
     string to_string(uint16_t start){
-        // 2 * 16 , 2 bytes per word, 16 words per line;
 
         stringstream gethex;
         int x;
@@ -64,8 +63,10 @@ public:
             ss << "0x" << setfill('0') << setw(4) << hex << (i * MAX_PER_LINE) << ": ";
             for(int t = 0; t < MAX_PER_LINE; t++) {
                 ss << setw(2);
-                word c = internal_memory[(i * MAX_PER_LINE) + t];
-                ss << hex << c;
+                uint8_t c = internal_memory[(i * MAX_PER_LINE) + t];
+                char h[3];
+                sprintf(h, "%02x", c);
+                ss << h;
                 ss << " ";
             }
             ss << "\n";

@@ -14,7 +14,8 @@
 
 using namespace std;
 
-address evaluate(Emulator *e )
+address evaluate(Emulator *e 
+        )
 {
 	return 0;
 }

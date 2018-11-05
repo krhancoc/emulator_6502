@@ -1,7 +1,6 @@
 #include <ncurses.h>
 #include <panel.h>
 #include <sstream>
-#include <functional>
 
 #include "../include/terminal.h"
 #include "../include/instruction.h"
