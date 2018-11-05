@@ -10,8 +10,7 @@
 string choices[7] = {
     "Attach program",
     "Step",
-    "Reset", 
-    "Mem GOTO",
+    "Reset", "Mem GOTO",
     "Run Program",
     "Exit",
     ""
@@ -43,7 +42,6 @@ void Terminal::init_menu()
 
 Terminal::Terminal() 
 {
-        start();
 }
 
 void Terminal::start()
