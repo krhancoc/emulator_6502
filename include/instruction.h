@@ -33,27 +33,26 @@ static addressing_mode parse_addr_mode(string argument)
 	std::regex absa("\\s*" + prefix + address_str + endline_str);
 	std::regex absx("\\s*" + prefix + address_str + "\\s*,\\s*X" + "\\s*");
 	std::regex absy("\\s*" + prefix + address_str + "\\s*,\\s*Y" + "\\s*");
+	std::regex zera("\\s*" + prefix + word_str + endline_str);
+	std::regex zerx("\\s*" + prefix + word_str + "\\s*,\\s*X" + "\\s*");
 
-	cout << "INPUT " << argument << endl;
 
 	if (std::regex_match(argument, immediate)) {
-		cout << "IMM" << endl << endl;
 		return ADDR_IMM;
 	} else if (std::regex_match(argument, absa)) {
-		cout << "ABSA" << endl << endl;
 		return ADDR_ABSA;
 	} else if (std::regex_match(argument, absx)) {
-		cout << "ABSX" << endl << endl;
 		return ADDR_ABSX;
 	} else if (std::regex_match(argument, absy)) {
-		cout << "ABSY" << endl << endl;
 		return ADDR_ABSY;
+	} else if (std::regex_match(argument, zera)) {
+		return ADDR_ZERA;
+	} else if (std::regex_match(argument, zerx)) {
+		return ADDR_ZERX;
 	} else {
-		//throw("Invalid instruction");
+		throw "Invalid instruction";
 	}
 
-	cout << "WOOPS" << endl;
-	return ADDR_IMM;
 }
 
 // We have already checked if the regex checks will succeed, when
@@ -82,13 +81,10 @@ static word get_value(Emulator *emu, string argument, addressing_mode mode)
 		break;
 	
 	default:
-		throw("Invalid addressing mode");
+		throw "Invalid addressing mode";
 	}
 
 	string result = m[0].str();
-	cout << "FIRST  " << argument << endl;
-	cout << "ARG    " << arg << endl;
-	cout << "RESULT " << result << endl;
 	auto num = stoi(result, nullptr, 16);
 
 	switch(mode) {
@@ -104,7 +100,7 @@ static word get_value(Emulator *emu, string argument, addressing_mode mode)
 	case ADDR_ABSY:
 		return emu->mem->read(num + emu->get_y());
 	default:
-		throw("Invalid addressing mode");
+		throw "Invalid addressing mode";
 	}
 
 }
@@ -113,7 +109,6 @@ static word get_value(Emulator *emu, string argument, addressing_mode mode)
 class Instruction {
 protected:
     Emulator * emu;
-    int CYCLES = 0;
     int current_cycle = 0;
     uint16_t byte_length = 0;
     string line = "";
@@ -131,14 +126,6 @@ public:
     int get_cycle() 
     {
         return current_cycle;
-    };
-    void dec_cycle()
-    {
-        current_cycle--;
-    };
-    void reset()
-    {
-        current_cycle = CYCLES;
     };
     string to_string() 
     {
@@ -205,8 +192,6 @@ public:
     {
         line = l;
         emu = e;
-        CYCLES = 1;
-        current_cycle = CYCLES;
         byte_length = 2;
     };
     void run()
@@ -225,14 +210,11 @@ public:
     INC(Reg target, Emulator * e, string l) : target_reg(target) {
         emu = e;
         line = l;
-        CYCLES = 1;
-        current_cycle = CYCLES;
         byte_length = 2;
     };
     void run()
     {
         (*emu->quick_map[target_reg])++;
-        reset();
     };
 };
 
@@ -243,8 +225,6 @@ public:
     JMP(string label, Emulator * e, string l) : label(label) {
         line = l;
         emu = e;
-        CYCLES = 1;
-        current_cycle = CYCLES;
         byte_length = 2;
     };
     void run()
@@ -254,7 +234,6 @@ public:
 };
 
 class Group1 : public Instruction {
-protected:
     unordered_map<addressing_mode, size_t> group1_len {
 	{ADDR_IMM, 2},
 	{ADDR_ABSA, 4},
@@ -273,27 +252,21 @@ protected:
 	ADDR_ZERX,
     };
 
-    Value * value;
+protected:
     address addr;
     addressing_mode mode;   
 public:
     Group1(Emulator *e, string l) : Instruction(e, l) {
 	mode = parse_addr_mode(l.substr(3));
 	if (group1_allowed.find(mode) == group1_allowed.end())
-		throw("Invalid addressing mode");
+		throw "Invalid addressing mode";
 
 	byte_length = group1_len[mode];
-        current_cycle = CYCLES;
     };
 
 };
 
 class ADC: public Group1 {
-private:
-    // NOTE: Value may represent both literals and addresses
-    Value * value;
-    address addr;
-    addressing_mode mode;   
 public:
     ADC(Emulator * e, string l) : Group1(e, l) {}
 	
@@ -346,7 +319,7 @@ public:
     void run()
     {
     	Reg accumulator = Reg::A;
-        *emu->quick_map[accumulator] = emu->mem->read(get_value(emu, line, mode));
+        *emu->quick_map[accumulator] = get_value(emu, line, mode);
     }
 };
 
@@ -381,7 +354,7 @@ public:
     STA(Emulator * e, string l) : Group1(e, l) {
 	// Special case for STA, operand cannot be immediate
 	if (mode == ADDR_IMM)
-		throw("Invalid addressing mode");
+		throw "Invalid addressing mode";
     };
     void run()
     {
