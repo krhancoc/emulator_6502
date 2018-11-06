@@ -2,6 +2,8 @@
 #define __INSTRUCTION_H__
 
 #include <regex>
+#include <unordered_map>
+#include <unordered_set>
 
 #include "emulator.h"
 
@@ -14,6 +16,8 @@ enum addressing_mode {
 	ADDR_ZERX,
 	ADDR_ZERY,
 }; 
+
+
 // XXX Here temporarily
 static string prefix = "\\$";
 static string word_str = "([0-9a-fA-F]{2})";
@@ -211,53 +215,7 @@ public:
     }
 };
 
-class ADC: public Instruction {
-private:
-    // NOTE: Value may represent both literals and addresses
-    Value * value;
-    address addr;
-    addressing_mode mode;   
-public:
-    ADC(Emulator * e, string l) : Instruction(e, l) {
-	
-	mode = parse_addr_mode(l.substr(3));
-	switch (mode) {
-	case ADDR_IMM:
-        	CYCLES = 2;
-		byte_length = 2;
-		break;
-		
-	case ADDR_ABSA:
-        	CYCLES = 4;
-		byte_length = 3;
-		break;
-		
-	// XXX Will be 5 if the page boundary is crossed 
-	// while fetching the instruction.
-	case ADDR_ABSX:
-        	CYCLES = 4;
-		byte_length = 3;
-		break;
 
-	case ADDR_ABSY:
-        	CYCLES = 4;
-		byte_length = 3;
-		break;
-
-	default:
-		throw("Invalid addressing mode");
-	}
-
-        current_cycle = CYCLES;
-    };
-    void run()
-    {
-	
-    	Reg accumulator = Reg::A;
-        *emu->quick_map[accumulator] = *emu->quick_map[accumulator] 
-		+ get_value(emu, line, mode);
-    }
-};
 
 // 2 or 3 byte instruction
 class INC : public Instruction {
@@ -295,333 +253,140 @@ public:
     }
 };
 
+class Group1 : public Instruction {
+protected:
+    unordered_map<addressing_mode, size_t> group1_len {
+	{ADDR_IMM, 2},
+	{ADDR_ABSA, 4},
+	{ADDR_ABSX, 4},
+	{ADDR_ABSY, 4},
+	{ADDR_ZERA, 3},
+	{ADDR_ZERX, 4},
+    };
 
-class AND: public Instruction {
+    unordered_set<addressing_mode> group1_allowed {
+	ADDR_IMM,
+	ADDR_ABSA,
+	ADDR_ABSX,
+	ADDR_ABSY,
+	ADDR_ZERA,
+	ADDR_ZERX,
+    };
+
+    Value * value;
+    address addr;
+    addressing_mode mode;   
+public:
+    Group1(Emulator *e, string l) : Instruction(e, l) {
+	mode = parse_addr_mode(l.substr(3));
+	if (group1_allowed.find(mode) == group1_allowed.end())
+		throw("Invalid addressing mode");
+
+	byte_length = group1_len[mode];
+        current_cycle = CYCLES;
+    };
+
+};
+
+class ADC: public Group1 {
 private:
     // NOTE: Value may represent both literals and addresses
     Value * value;
     address addr;
     addressing_mode mode;   
 public:
-    AND(Emulator * e, string l) : Instruction(e, l) {
+    ADC(Emulator * e, string l) : Group1(e, l) {}
 	
-	mode = parse_addr_mode(l.substr(3));
-	switch (mode) {
-	case ADDR_IMM:
-        	CYCLES = 2;
-		byte_length = 2;
-		break;
-		
-	case ADDR_ABSA:
-        	CYCLES = 4;
-		byte_length = 3;
-		break;
-		
-	// XXX Will be 5 if the page boundary is crossed 
-	// while fetching the instruction.
-	case ADDR_ABSX:
-        	CYCLES = 4;
-		byte_length = 3;
-		break;
+    void run()
+    {
+    	Reg accumulator = Reg::A;
+        *emu->quick_map[accumulator] = 
+		*emu->quick_map[accumulator] + get_value(emu, line, mode);
+    }
+};
 
-	case ADDR_ABSY:
-        	CYCLES = 4;
-		byte_length = 3;
-		break;
-
-	default:
-		throw("Invalid addressing mode");
-	}
-
-        current_cycle = CYCLES;
-    };
+class AND: public Group1 {
+public:
+    AND(Emulator * e, string l) : Group1(e, l) {}
     void run()
     {
 	
     	Reg accumulator = Reg::A;
-        *emu->quick_map[accumulator] = *emu->quick_map[accumulator] 
-		& get_value(emu, line, mode);
+        *emu->quick_map[accumulator] = 
+		*emu->quick_map[accumulator] & get_value(emu, line, mode);
     }
 };
 
 
-class CMP: public Instruction {
-private:
-    // NOTE: Value may represent both literals and addresses
-    Value * value;
-    address addr;
-    addressing_mode mode;   
+class CMP: public Group1 {
 public:
-    CMP(Emulator * e, string l) : Instruction(e, l) {
-	
-	mode = parse_addr_mode(l.substr(3));
-	switch (mode) {
-	case ADDR_IMM:
-        	CYCLES = 2;
-		byte_length = 2;
-		break;
-		
-	case ADDR_ABSA:
-        	CYCLES = 4;
-		byte_length = 3;
-		break;
-		
-	// XXX Will be 5 if the page boundary is crossed 
-	// while fetching the instruction.
-	case ADDR_ABSX:
-        	CYCLES = 4;
-		byte_length = 3;
-		break;
-
-	case ADDR_ABSY:
-        	CYCLES = 4;
-		byte_length = 3;
-		break;
-
-	default:
-		throw("Invalid addressing mode");
-	}
-
-        current_cycle = CYCLES;
-    };
+    CMP(Emulator * e, string l) : Group1(e, l) {}
     void run()
     {
-	
-    	Reg accumulator = Reg::A;
 	//Needs flags register
     }
 };
 
 
-class EOR: public Instruction {
-private:
-    // NOTE: Value may represent both literals and addresses
-    Value * value;
-    address addr;
-    addressing_mode mode;   
+class EOR: public Group1 {
 public:
-    EOR(Emulator * e, string l) : Instruction(e, l) {
-	
-	mode = parse_addr_mode(l.substr(3));
-	switch (mode) {
-	case ADDR_IMM:
-        	CYCLES = 2;
-		byte_length = 2;
-		break;
-		
-	case ADDR_ABSA:
-        	CYCLES = 4;
-		byte_length = 3;
-		break;
-		
-	// XXX Will be 5 if the page boundary is crossed 
-	// while fetching the instruction.
-	case ADDR_ABSX:
-        	CYCLES = 4;
-		byte_length = 3;
-		break;
-
-	case ADDR_ABSY:
-        	CYCLES = 4;
-		byte_length = 3;
-		break;
-
-	default:
-		throw("Invalid addressing mode");
-	}
-
-        current_cycle = CYCLES;
-    };
+    EOR(Emulator * e, string l) : Group1(e, l) {}
     void run()
     {
-	
     	Reg accumulator = Reg::A;
-        *emu->quick_map[accumulator] = *emu->quick_map[accumulator] 
-		^  get_value(emu, line, mode);
+        *emu->quick_map[accumulator] = 
+		*emu->quick_map[accumulator] ^  get_value(emu, line, mode);
     }
 };
 
 
-class LDA: public Instruction {
-private:
-    // NOTE: Value may represent both literals and addresses
-    Value * value;
-    address addr;
-    addressing_mode mode;   
+class LDA: public Group1 {
 public:
-    LDA(Emulator * e, string l) : Instruction(e, l) {
-	
-	mode = parse_addr_mode(l.substr(3));
-	switch (mode) {
-	case ADDR_ABSA:
-        	CYCLES = 4;
-		byte_length = 3;
-		break;
-		
-	// XXX Will be 5 if the page boundary is crossed 
-	// while fetching the instruction.
-	case ADDR_ABSX:
-        	CYCLES = 4;
-		byte_length = 3;
-		break;
-
-	case ADDR_ABSY:
-        	CYCLES = 4;
-		byte_length = 3;
-		break;
-
-	default:
-		throw("Invalid addressing mode");
-	}
-
-        current_cycle = CYCLES;
-    };
+    LDA(Emulator * e, string l) : Group1(e, l) {}
     void run()
     {
-	
     	Reg accumulator = Reg::A;
-        *emu->quick_map[accumulator] = get_value(emu, line, mode);
+        *emu->quick_map[accumulator] = emu->mem->read(get_value(emu, line, mode));
     }
 };
 
 
-class ORA: public Instruction {
-private:
-    // NOTE: Value may represent both literals and addresses
-    Value * value;
-    address addr;
-    addressing_mode mode;   
+class ORA: public Group1 {
 public:
-    ORA(Emulator * e, string l) : Instruction(e, l) {
-	
-	mode = parse_addr_mode(l.substr(3));
-	switch (mode) {
-	case ADDR_IMM:
-        	CYCLES = 2;
-		byte_length = 2;
-		break;
-		
-	case ADDR_ABSA:
-        	CYCLES = 4;
-		byte_length = 3;
-		break;
-		
-	// XXX Will be 5 if the page boundary is crossed 
-	// while fetching the instruction.
-	case ADDR_ABSX:
-        	CYCLES = 4;
-		byte_length = 3;
-		break;
-
-	case ADDR_ABSY:
-        	CYCLES = 4;
-		byte_length = 3;
-		break;
-
-	default:
-		throw("Invalid addressing mode");
-	}
-
-        current_cycle = CYCLES;
-    };
+    ORA(Emulator * e, string l) : Group1(e, l) {}
     void run()
     {
 	
     	Reg accumulator = Reg::A;
-        *emu->quick_map[accumulator] = *emu->quick_map[accumulator] 
-		| get_value(emu, line, mode);
+        *emu->quick_map[accumulator] = 
+		*emu->quick_map[accumulator] | get_value(emu, line, mode);
     }
 };
 
 
-class SBC: public Instruction {
-private:
-    // NOTE: Value may represent both literals and addresses
-    Value * value;
-    address addr;
-    addressing_mode mode;   
+class SBC: public Group1 {
 public:
-    SBC(Emulator * e, string l) : Instruction(e, l) {
-	
-	mode = parse_addr_mode(l.substr(3));
-	switch (mode) {
-	case ADDR_IMM:
-        	CYCLES = 2;
-		byte_length = 2;
-		break;
-		
-	case ADDR_ABSA:
-        	CYCLES = 4;
-		byte_length = 3;
-		break;
-		
-	// XXX Will be 5 if the page boundary is crossed 
-	// while fetching the instruction.
-	case ADDR_ABSX:
-        	CYCLES = 4;
-		byte_length = 3;
-		break;
-
-	case ADDR_ABSY:
-        	CYCLES = 4;
-		byte_length = 3;
-		break;
-
-	default:
-		throw("Invalid addressing mode");
-	}
-
-        current_cycle = CYCLES;
-    };
+    SBC(Emulator * e, string l) : Group1(e, l) {}
     void run()
     {
-	
     	Reg accumulator = Reg::A;
-        *emu->quick_map[accumulator] = *emu->quick_map[accumulator] 
-		- get_value(emu, line, mode);
+        *emu->quick_map[accumulator] = 
+		*emu->quick_map[accumulator] - get_value(emu, line, mode);
     }
 };
 
 
-class STA: public Instruction {
-private:
-    // NOTE: Value may represent both literals and addresses
-    Value * value;
-    address addr;
-    addressing_mode mode;   
+class STA: public Group1 {
 public:
-    STA(Emulator * e, string l) : Instruction(e, l) {
-	
-	mode = parse_addr_mode(l.substr(3));
-	switch (mode) {
-	case ADDR_ABSA:
-        	CYCLES = 4;
-		byte_length = 3;
-		break;
-		
-	// XXX Will be 5 if the page boundary is crossed 
-	// while fetching the instruction.
-	case ADDR_ABSX:
-        	CYCLES = 4;
-		byte_length = 3;
-		break;
-
-	case ADDR_ABSY:
-        	CYCLES = 4;
-		byte_length = 3;
-		break;
-
-	default:
+    STA(Emulator * e, string l) : Group1(e, l) {
+	// Special case for STA, operand cannot be immediate
+	if (mode == ADDR_IMM)
 		throw("Invalid addressing mode");
-	}
-
-        current_cycle = CYCLES;
     };
     void run()
     {
-	
     	Reg accumulator = Reg::A;
-        *emu->quick_map[accumulator] = *emu->quick_map[accumulator]; 
+        emu->mem->write(get_value(emu, line, mode), *emu->quick_map[accumulator]); 
     }
 };
 
