@@ -295,4 +295,334 @@ public:
     }
 };
 
+
+class AND: public Instruction {
+private:
+    // NOTE: Value may represent both literals and addresses
+    Value * value;
+    address addr;
+    addressing_mode mode;   
+public:
+    AND(Emulator * e, string l) : Instruction(e, l) {
+	
+	mode = parse_addr_mode(l.substr(3));
+	switch (mode) {
+	case ADDR_IMM:
+        	CYCLES = 2;
+		byte_length = 2;
+		break;
+		
+	case ADDR_ABSA:
+        	CYCLES = 4;
+		byte_length = 3;
+		break;
+		
+	// XXX Will be 5 if the page boundary is crossed 
+	// while fetching the instruction.
+	case ADDR_ABSX:
+        	CYCLES = 4;
+		byte_length = 3;
+		break;
+
+	case ADDR_ABSY:
+        	CYCLES = 4;
+		byte_length = 3;
+		break;
+
+	default:
+		throw("Invalid addressing mode");
+	}
+
+        current_cycle = CYCLES;
+    };
+    void run()
+    {
+	
+    	Reg accumulator = Reg::A;
+        *emu->quick_map[accumulator] = *emu->quick_map[accumulator] 
+		& get_value(emu, line, mode);
+    }
+};
+
+
+class CMP: public Instruction {
+private:
+    // NOTE: Value may represent both literals and addresses
+    Value * value;
+    address addr;
+    addressing_mode mode;   
+public:
+    CMP(Emulator * e, string l) : Instruction(e, l) {
+	
+	mode = parse_addr_mode(l.substr(3));
+	switch (mode) {
+	case ADDR_IMM:
+        	CYCLES = 2;
+		byte_length = 2;
+		break;
+		
+	case ADDR_ABSA:
+        	CYCLES = 4;
+		byte_length = 3;
+		break;
+		
+	// XXX Will be 5 if the page boundary is crossed 
+	// while fetching the instruction.
+	case ADDR_ABSX:
+        	CYCLES = 4;
+		byte_length = 3;
+		break;
+
+	case ADDR_ABSY:
+        	CYCLES = 4;
+		byte_length = 3;
+		break;
+
+	default:
+		throw("Invalid addressing mode");
+	}
+
+        current_cycle = CYCLES;
+    };
+    void run()
+    {
+	
+    	Reg accumulator = Reg::A;
+	//Needs flags register
+    }
+};
+
+
+class EOR: public Instruction {
+private:
+    // NOTE: Value may represent both literals and addresses
+    Value * value;
+    address addr;
+    addressing_mode mode;   
+public:
+    EOR(Emulator * e, string l) : Instruction(e, l) {
+	
+	mode = parse_addr_mode(l.substr(3));
+	switch (mode) {
+	case ADDR_IMM:
+        	CYCLES = 2;
+		byte_length = 2;
+		break;
+		
+	case ADDR_ABSA:
+        	CYCLES = 4;
+		byte_length = 3;
+		break;
+		
+	// XXX Will be 5 if the page boundary is crossed 
+	// while fetching the instruction.
+	case ADDR_ABSX:
+        	CYCLES = 4;
+		byte_length = 3;
+		break;
+
+	case ADDR_ABSY:
+        	CYCLES = 4;
+		byte_length = 3;
+		break;
+
+	default:
+		throw("Invalid addressing mode");
+	}
+
+        current_cycle = CYCLES;
+    };
+    void run()
+    {
+	
+    	Reg accumulator = Reg::A;
+        *emu->quick_map[accumulator] = *emu->quick_map[accumulator] 
+		^  get_value(emu, line, mode);
+    }
+};
+
+
+class LDA: public Instruction {
+private:
+    // NOTE: Value may represent both literals and addresses
+    Value * value;
+    address addr;
+    addressing_mode mode;   
+public:
+    LDA(Emulator * e, string l) : Instruction(e, l) {
+	
+	mode = parse_addr_mode(l.substr(3));
+	switch (mode) {
+	case ADDR_ABSA:
+        	CYCLES = 4;
+		byte_length = 3;
+		break;
+		
+	// XXX Will be 5 if the page boundary is crossed 
+	// while fetching the instruction.
+	case ADDR_ABSX:
+        	CYCLES = 4;
+		byte_length = 3;
+		break;
+
+	case ADDR_ABSY:
+        	CYCLES = 4;
+		byte_length = 3;
+		break;
+
+	default:
+		throw("Invalid addressing mode");
+	}
+
+        current_cycle = CYCLES;
+    };
+    void run()
+    {
+	
+    	Reg accumulator = Reg::A;
+        *emu->quick_map[accumulator] = get_value(emu, line, mode);
+    }
+};
+
+
+class ORA: public Instruction {
+private:
+    // NOTE: Value may represent both literals and addresses
+    Value * value;
+    address addr;
+    addressing_mode mode;   
+public:
+    ORA(Emulator * e, string l) : Instruction(e, l) {
+	
+	mode = parse_addr_mode(l.substr(3));
+	switch (mode) {
+	case ADDR_IMM:
+        	CYCLES = 2;
+		byte_length = 2;
+		break;
+		
+	case ADDR_ABSA:
+        	CYCLES = 4;
+		byte_length = 3;
+		break;
+		
+	// XXX Will be 5 if the page boundary is crossed 
+	// while fetching the instruction.
+	case ADDR_ABSX:
+        	CYCLES = 4;
+		byte_length = 3;
+		break;
+
+	case ADDR_ABSY:
+        	CYCLES = 4;
+		byte_length = 3;
+		break;
+
+	default:
+		throw("Invalid addressing mode");
+	}
+
+        current_cycle = CYCLES;
+    };
+    void run()
+    {
+	
+    	Reg accumulator = Reg::A;
+        *emu->quick_map[accumulator] = *emu->quick_map[accumulator] 
+		| get_value(emu, line, mode);
+    }
+};
+
+
+class SBC: public Instruction {
+private:
+    // NOTE: Value may represent both literals and addresses
+    Value * value;
+    address addr;
+    addressing_mode mode;   
+public:
+    SBC(Emulator * e, string l) : Instruction(e, l) {
+	
+	mode = parse_addr_mode(l.substr(3));
+	switch (mode) {
+	case ADDR_IMM:
+        	CYCLES = 2;
+		byte_length = 2;
+		break;
+		
+	case ADDR_ABSA:
+        	CYCLES = 4;
+		byte_length = 3;
+		break;
+		
+	// XXX Will be 5 if the page boundary is crossed 
+	// while fetching the instruction.
+	case ADDR_ABSX:
+        	CYCLES = 4;
+		byte_length = 3;
+		break;
+
+	case ADDR_ABSY:
+        	CYCLES = 4;
+		byte_length = 3;
+		break;
+
+	default:
+		throw("Invalid addressing mode");
+	}
+
+        current_cycle = CYCLES;
+    };
+    void run()
+    {
+	
+    	Reg accumulator = Reg::A;
+        *emu->quick_map[accumulator] = *emu->quick_map[accumulator] 
+		- get_value(emu, line, mode);
+    }
+};
+
+
+class STA: public Instruction {
+private:
+    // NOTE: Value may represent both literals and addresses
+    Value * value;
+    address addr;
+    addressing_mode mode;   
+public:
+    STA(Emulator * e, string l) : Instruction(e, l) {
+	
+	mode = parse_addr_mode(l.substr(3));
+	switch (mode) {
+	case ADDR_ABSA:
+        	CYCLES = 4;
+		byte_length = 3;
+		break;
+		
+	// XXX Will be 5 if the page boundary is crossed 
+	// while fetching the instruction.
+	case ADDR_ABSX:
+        	CYCLES = 4;
+		byte_length = 3;
+		break;
+
+	case ADDR_ABSY:
+        	CYCLES = 4;
+		byte_length = 3;
+		break;
+
+	default:
+		throw("Invalid addressing mode");
+	}
+
+        current_cycle = CYCLES;
+    };
+    void run()
+    {
+	
+    	Reg accumulator = Reg::A;
+        *emu->quick_map[accumulator] = *emu->quick_map[accumulator]; 
+    }
+};
+
 #endif

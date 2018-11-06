@@ -92,13 +92,20 @@ Instruction * parse(string line, Emulator * emu)
     if (!command.compare("ADC")) {
 	    return new ADC(emu, line);
     } else if (!command.compare("AND")) {
+	    return new AND(emu, line);
     } else if (!command.compare("CMP")) {
+	    return new CMP(emu, line);
     } else if (!command.compare("EOR")) {
+	    return new EOR(emu, line);
     } else if (!command.compare("JMP")) {
     } else if (!command.compare("LDA")) {
+	    return new LDA(emu, line);
     } else if (!command.compare("ORA")) {
+	    return new ORA(emu, line);
     } else if (!command.compare("SBC")) {
+	    return new SBC(emu, line);
     } else if (!command.compare("STA")) {
+	    return new STA(emu, line);
     } else {
 //	throw("Invalid opcode");
     }
