@@ -97,7 +97,7 @@ class Emulator {
     word p = 0x20;
 public:
     // to get flag bit, do AND for corrsponding p_bit and P, and test if larger than 0(true)
-    // to set flag bit, do OR
+    // to set flag bit, do OR or (P & ~p_bit[])
     const word p_bit[8] = {
 	    0x1, 0x2, 0x4, 0x8, 0x10, 0x20, 0x40, 0x80
     };

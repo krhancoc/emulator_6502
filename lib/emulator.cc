@@ -123,8 +123,6 @@ Instruction * parse(string line, Emulator * emu)
 		return new CLC(emu, line);
 	} else if (!command.compare("SEC")) {
 		return new SEC(emu, line);
-	} else if (!command.compare("SEC")) {
-		return new SEC(emu, line);
 	} else if (!command.compare("CLI")) {
 		return new CLI(emu, line);
 	} else if (!command.compare("SEI")) {
@@ -231,5 +229,6 @@ void Emulator::jump_to(string label)
 
 void Emulator::reset(){
     pc = a = x = y = current_inst = 0;
+	p = 0x20;
 };
 
