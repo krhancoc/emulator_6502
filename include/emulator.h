@@ -85,12 +85,7 @@ struct state {
 };
 
 class Emulator {
-    // to get flag bit, do AND for corrsponding p_bit and P, and test if larger than 0(true)
-    // to set flag bit, do OR
-    const word p_bit[8] = {
-	    0x1, 0x2, 0x4, 0x8, 0x10, 0x20, 0x40, 0x80
-    };
-
+    
     vector<Instruction *> program;
     address current_inst  = 0;
     unordered_map<string, address> labels;
@@ -101,6 +96,12 @@ class Emulator {
     // only keep the bit 5 always be 1 (bit order 7->0)
     word p = 0x20;
 public:
+    // to get flag bit, do AND for corrsponding p_bit and P, and test if larger than 0(true)
+    // to set flag bit, do OR
+    const word p_bit[8] = {
+	    0x1, 0x2, 0x4, 0x8, 0x10, 0x20, 0x40, 0x80
+    };
+
     Memory * mem = new Memory();
     Clock * clock = new Clock(1);
     unordered_map<Reg, word *> quick_map {
@@ -151,6 +152,7 @@ public:
        ss << "A : " << static_cast<unsigned>((unsigned char) a) << endl;
        ss << "X : " << static_cast<unsigned>((unsigned char) x) << endl;
        ss << "Y : " << static_cast<unsigned>((unsigned char) y) << endl;
+       ss << "P : " << static_cast<unsigned>((unsigned char) p) << endl;
        return ss.str();
     };
 

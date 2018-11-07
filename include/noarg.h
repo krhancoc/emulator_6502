@@ -22,4 +22,67 @@ public:
 
 };
 
+class CLC: public Noarg {
+public:
+	CLC(Emulator *e, string l) : Noarg(e, l) {};
+	void run() {
+		Reg preg = Reg::P;
+		*emu->quick_map[preg] = *emu->quick_map[preg] ^ ((*emu).p_bit[0]);
+	}
+};
+
+class SEC: public Noarg {
+public:
+	SEC(Emulator *e, string l) : Noarg(e, l) {};
+	void run() {
+		Reg preg = Reg::P;
+		*emu->quick_map[preg] = *emu->quick_map[preg] | ((*emu).p_bit[0]);
+	}
+};
+
+class CLI: public Noarg {
+public:
+	CLI(Emulator *e, string l) : Noarg(e, l) {};
+	void run() {
+		Reg preg = Reg::P;
+		*emu->quick_map[preg] = *emu->quick_map[preg] ^ ((*emu).p_bit[1]);
+	}
+};
+
+class SEI: public Noarg {
+public:
+	SEI(Emulator *e, string l) : Noarg(e, l) {};
+	void run() {
+		Reg preg = Reg::P;
+		*emu->quick_map[preg] = *emu->quick_map[preg] | ((*emu).p_bit[1]);
+	}
+};
+
+class CLV: public Noarg {
+public:
+	CLV(Emulator *e, string l) : Noarg(e, l) {};
+	void run() {
+		Reg preg = Reg::P;
+		*emu->quick_map[preg] = *emu->quick_map[preg] ^ ((*emu).p_bit[6]);
+	}
+};
+
+class CLD: public Noarg {
+public:
+	CLD(Emulator *e, string l) : Noarg(e, l) {};
+	void run() {
+		Reg preg = Reg::P;
+		*emu->quick_map[preg] = *emu->quick_map[preg] ^ ((*emu).p_bit[3]);
+	}
+};
+
+class SED: public Noarg {
+public:
+	SED(Emulator *e, string l) : Noarg(e, l) {};
+	void run() {
+		Reg preg = Reg::P;
+		*emu->quick_map[preg] = *emu->quick_map[preg] | ((*emu).p_bit[3]);
+	}
+};
+
 #endif

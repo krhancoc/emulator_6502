@@ -31,6 +31,8 @@ Reg get_target(string arg)
             return Reg::Y;
         case 'A':
             return Reg::A;
+		case 'P':
+			return Reg::P;
     }
     throw invalid_argument("Invalid instruction");
 }
@@ -117,8 +119,24 @@ Instruction * parse(string line, Emulator * emu)
 	    return new LDY(emu, line);
     } else if (!command.compare("INX")) {
 	    return new INX(emu, line);
-    } else if (!command.compare("JMP")) {
-	    vector<string> arguments;
+	} else if (!command.compare("CLC")) {
+		return new CLC(emu, line);
+	} else if (!command.compare("SEC")) {
+		return new SEC(emu, line);
+	} else if (!command.compare("SEC")) {
+		return new SEC(emu, line);
+	} else if (!command.compare("CLI")) {
+		return new CLI(emu, line);
+	} else if (!command.compare("SEI")) {
+		return new SEI(emu, line);
+	} else if (!command.compare("CLV")) {
+		return new CLV(emu, line);
+	} else if (!command.compare("CLD")) {
+		return new CLD(emu, line);
+	} else if (!command.compare("SED")) {
+		return new SED(emu, line);
+	} else if (!command.compare("JMP")) {
+		vector<string> arguments;
 	    string token;
 	    istringstream args(line); 
 	    while(getline(args, token, ' ')){

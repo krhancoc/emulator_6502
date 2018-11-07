@@ -3,7 +3,7 @@
 
 
 unordered_map<addressing_mode, size_t> Binary::instruction_lengths {
-        {ADDR_IMM, 2},
+    {ADDR_IMM, 2},
 	{ADDR_ABSA, 4},
 	{ADDR_ABSX, 4},
 	{ADDR_ABSY, 4},
@@ -60,8 +60,22 @@ unordered_set<addressing_mode> Auxload::allowed_modes {
 
 unordered_map<addressing_mode, size_t> Noarg::instruction_lengths {
     {ADDR_NONE , 2},
+    {ADDR_NONE , 2},
+	{ADDR_NONE , 2},
+	{ADDR_NONE , 2},
+	{ADDR_NONE , 2},
+	{ADDR_NONE , 2},
+	{ADDR_NONE , 2},
+	{ADDR_NONE , 2},
 };
 
 unordered_set<addressing_mode> Noarg::allowed_modes {
-    ADDR_NONE,
+	ADDR_NONE,
+	ADDR_NONE,
+	ADDR_NONE,
+	ADDR_NONE,
+	ADDR_NONE,
+	ADDR_NONE,
+	ADDR_NONE,
+	ADDR_NONE,
 };
