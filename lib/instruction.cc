@@ -1,4 +1,5 @@
 #include "../include/instruction.h"
+#include "../include/instruction_set.h"
 
 
 unordered_map<addressing_mode, size_t> Binary::instruction_lengths {
@@ -34,5 +35,25 @@ unordered_set<addressing_mode> Shift::allowed_modes {
     ADDR_ABSX,
     ADDR_ZERA,
     ADDR_ZERX,
+};
+
+unordered_map<addressing_mode, size_t> Auxload::instruction_lengths {
+    {ADDR_IMM, 2},
+    {ADDR_ABSA, 3},
+    {ADDR_ABSX, 4},
+    {ADDR_ABSY, 4},
+    {ADDR_ZERA, 4},
+    {ADDR_ZERX, 4},
+    {ADDR_ZERY, 4},
+};
+
+unordered_set<addressing_mode> Auxload::allowed_modes {
+    ADDR_IMM,
+    ADDR_ABSA,
+    ADDR_ABSX,
+    ADDR_ABSY,
+    ADDR_ZERA,
+    ADDR_ZERX,
+    ADDR_ZERY,
 };
 
