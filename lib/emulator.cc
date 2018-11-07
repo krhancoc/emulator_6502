@@ -156,10 +156,12 @@ void Emulator::attach(string filename)
     program.clear();
 
     reset();
-
     in.open(filename);    
     vector<Instruction *> instructions;
-    if (in.is_open()) {
+	if (!in) {
+		perror(string("Cannot open input file: " + filename).c_str());
+	}
+	if (in.is_open()) {
         while(getline(in, line)) {
             if (line.length() != 0 && line[0] != ';') {
                 try {
@@ -173,8 +175,8 @@ void Emulator::attach(string filename)
         throw invalid_argument("File not found"); 
     }
     in.close();
-
-    for (size_t i = 0; i < instructions.size(); i++) {
+    
+	for (size_t i = 0; i < instructions.size(); i++) {
         vector<string> code_window;
         Instruction * inst = instructions[i];
         size_t start = int (i - 2) > 0  ? i - 2: 0;
