@@ -150,7 +150,8 @@ protected:
     vector<string> code_window;
 public:
     Instruction() {}
-    Instruction(Emulator *e, string l): emu(e), line(l) {}
+    Instruction(Emulator *e, string l): emu(e), line(l) {
+    }
     virtual ~Instruction() = default;
     virtual void run()=0;
     int execute() {
@@ -269,23 +270,9 @@ public:
 };
 
 class Binary: public InstructionGroup {
-    unordered_map<addressing_mode, size_t> instruction_lengths {
-	{ADDR_IMM, 2},
-	{ADDR_ABSA, 4},
-	{ADDR_ABSX, 4},
-	{ADDR_ABSY, 4},
-	{ADDR_ZERA, 3},
-	{ADDR_ZERX, 4},
-    };
-
-    unordered_set<addressing_mode> allowed_modes {
-	ADDR_IMM,
-	ADDR_ABSA,
-	ADDR_ABSX,
-	ADDR_ABSY,
-	ADDR_ZERA,
-	ADDR_ZERX,
-    };
+private:
+    static unordered_map<addressing_mode, size_t> instruction_lengths;
+    static unordered_set<addressing_mode> allowed_modes;
 public:
     Binary(Emulator *e, string l) 
 	    : InstructionGroup(e, l, instruction_lengths, allowed_modes) {}
@@ -293,7 +280,8 @@ public:
 
 class ADC: public Binary {
 public:
-    ADC(Emulator * e, string l) : Binary(e, l) {}
+    ADC(Emulator * e, string l) : Binary(e, l) {
+    }
 	
     void run()
     {
@@ -385,24 +373,11 @@ public:
 };
 
 class Shift: public InstructionGroup {
-    unordered_map<addressing_mode, size_t> instruction_lengths {
-	{ADDR_ACC, 2},
-	{ADDR_ABSA, 5},
-	{ADDR_ABSX, 6},
-	{ADDR_ZERA, 6},
-	{ADDR_ZERX, 7},
-    };
-
-    unordered_set<addressing_mode> allowed_modes {
-	ADDR_ACC,
-	ADDR_ABSA,
-	ADDR_ABSX,
-	ADDR_ZERA,
-	ADDR_ZERX,
-    };
+    static unordered_map<addressing_mode, size_t> instruction_lengths;
+    static unordered_set<addressing_mode> allowed_modes;
 public:
     Shift(Emulator *e, string l) 
-	    : InstructionGroup(e, l, instruction_lengths, allowed_modes) {}
+	    : InstructionGroup(e, l, instruction_lengths, allowed_modes) {};
 };
 
 class Increment: public Shift {

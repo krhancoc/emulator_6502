@@ -115,7 +115,8 @@ Instruction * parse(string line, Emulator * emu)
     /* XXX Integrate into the above */
     vector<string> arguments;
     string token;
-    istringstream args(line); while(getline(args, token, ' ')){
+    istringstream args(line); 
+    while(getline(args, token, ' ')){
         arguments.push_back(token);
     }
     switch (arguments.size()) {
