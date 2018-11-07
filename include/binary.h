@@ -46,6 +46,14 @@ public:
 };
 
 
+class CPX: public Binary {
+public:
+	CPX(Emulator *e, string l): Binary(e, l) {}
+	void run() {
+
+	}
+};
+
 class EOR: public Binary {
 public:
     EOR(Emulator * e, string l) : Binary(e, l) {}

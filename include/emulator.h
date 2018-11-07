@@ -15,7 +15,7 @@
 
 using namespace std;
 
-enum class Reg { X, Y, A};
+enum class Reg { X, Y, A, P};
 typedef uint16_t address;
 typedef uint8_t word;
 
@@ -80,22 +80,31 @@ struct state {
     word a;
     word x;
     word y;
+    word p;
     word *internal_memory;
 };
 
 class Emulator {
+    // to get flag bit, do AND for corrsponding p_bit and P, and test if larger than 0(true)
+    // to set flag bit, do OR
+    const word p_bit[8] = {
+	    0x1, 0x2, 0x4, 0x8, 0x10, 0x20, 0x40, 0x80
+    }
+
     vector<Instruction *> program;
     address current_inst  = 0;
     unordered_map<string, address> labels;
     address pc = 0;
     word a = 0; 
     word x = 0; 
-    word y = 0; 
+    word y = 0;
+    // only keep the bit 5 always be 1 (bit order 7->0)
+    word p = 0x20;
 public:
     Memory * mem = new Memory();
     Clock * clock = new Clock(1);
     unordered_map<Reg, word *> quick_map {
-        {Reg::X, &x}, {Reg::A, &a}, {Reg::Y, &y}
+        {Reg::X, &x}, {Reg::A, &a}, {Reg::Y, &y}, {Reg::P, &p}
     };
 
     void increment_pc(uint16_t val)
@@ -111,6 +120,8 @@ public:
     word get_a() { return a; }
     word get_x() { return x; }
     word get_y() { return y; }
+    word get_p() { return p; }
+
 
     state run()
     {
@@ -123,6 +134,7 @@ public:
             .a = a,
             .x = x,
             .y = y,
+	    .p = p,
             .internal_memory = mem->internal_memory
         };
     };
