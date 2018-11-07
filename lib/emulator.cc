@@ -230,5 +230,6 @@ void Emulator::jump_to(string label)
 void Emulator::reset(){
     pc = a = x = y = current_inst = 0;
 	p = 0x20;
+    memset(mem->internal_memory, 0, MAX_MEMORY);
 };
 

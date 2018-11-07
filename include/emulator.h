@@ -47,7 +47,11 @@ public:
     Memory() {
         memset(internal_memory, 0, MAX_MEMORY);
     }
-    void write(address a, word data){ internal_memory[a] = data; };
+    void write(address a, word data)
+    { 
+        cout << "WRITE AT " << a << " WITH: " << data << endl;
+        internal_memory[a] = data; 
+    };
     word read(address a) { return internal_memory[a]; }
 
     string to_string(uint16_t start){
@@ -59,7 +63,7 @@ public:
         uint16_t lines = (MAX_MEMORY / (MAX_PER_LINE)); 
         stringstream ss;
 
-        for(uint16_t i = x; i < lines && i < x + 10; i++) {
+        for(uint16_t i = x; i < lines && i < x + 20; i++) {
             ss << "0x" << setfill('0') << setw(4) << hex << (i * MAX_PER_LINE) << ": ";
             for(int t = 0; t < MAX_PER_LINE; t++) {
                 ss << setw(2);
@@ -135,7 +139,7 @@ public:
             .a = a,
             .x = x,
             .y = y,
-	    .p = p,
+	        .p = p,
             .internal_memory = mem->internal_memory
         };
     };
@@ -147,12 +151,30 @@ public:
         
     string to_string()
     {
-       stringstream ss; 
-       ss << "PC : " << pc << endl;
-       ss << "A : " << static_cast<unsigned>((unsigned char) a) << endl;
-       ss << "X : " << static_cast<unsigned>((unsigned char) x) << endl;
-       ss << "Y : " << static_cast<unsigned>((unsigned char) y) << endl;
-       ss << "P : " << static_cast<unsigned>((unsigned char) p) << endl;
+        stringstream ss; 
+        ss << "PC : " << pc << endl;
+        ss << "A : " << static_cast<unsigned>((unsigned char) a) << endl;
+        ss << "X : " << static_cast<unsigned>((unsigned char) x) << endl;
+        ss << "Y : " << static_cast<unsigned>((unsigned char) y) << endl;
+        ss << endl;
+        ss << "Flags" << endl;
+        int p = this->p;
+        ss << "C: " << static_cast<unsigned>((unsigned char) (p & 1)) << ", ";
+        p = p >> 1;
+        ss << "Z: " << static_cast<unsigned>((unsigned char) (p & 1)) << ", ";
+        p = p >> 1;
+        ss << "I: " << static_cast<unsigned>((unsigned char) (p & 1)) << ", ";
+        p = p >> 1;
+        ss << "D: " << static_cast<unsigned>((unsigned char) (p & 1)) << endl;
+        p = p >> 1;
+        ss << "B: " << static_cast<unsigned>((unsigned char) (p & 1)) << ", ";
+        p = p >> 1;
+        ss << "N/A: " << static_cast<unsigned>((unsigned char) (p & 1)) << ", ";
+        p = p >> 1;
+        ss << "V: " << static_cast<unsigned>((unsigned char) (p & 1)) << ", ";
+        p = p >> 1;
+        ss << "S: " << static_cast<unsigned>((unsigned char) (p & 1)) << endl;;
+        p = p >> 1;
        return ss.str();
     };
 

@@ -1,5 +1,3 @@
-#include <ncurses.h>
-#include <panel.h>
 #include <sstream>
 
 #include "../include/terminal.h"
@@ -44,27 +42,32 @@ Terminal::Terminal()
 {
 }
 
+enum COLOR {
+    BLACK = 0, WHITE = 1, RED = 2, 
+    MAGENTA = 3, YELLOW = 4, GREEN = 5,
+    CYAN = 6, BLUE = 7
+};
+
 void Terminal::start()
 {
     initscr();        
     init_menu();
-    reg_border = newwin(12, 40, 4, 1);
-    reg = newwin(10, 35, 5, 2);
-    code_border = newwin(12, 59, 4, 42);
-    code = newwin(10, 40, 5, 44);
-    memory_border = newwin(12,100, 16, 1);
-    memory = newwin(10, 80, 17, 2);
 
-    box(reg_border, 0, 0);
-    box(code_border, 0, 0);
-    box(memory_border, 0, 0);
 
-    reg_panel = new_panel(reg);
-    code_panel = new_panel(code);
-    memory_panel = new_panel(memory);
+    reg = new Panel(12, 50, 4, 1);
+    code = new Panel(12, 50, 4, 51);
+    memory = new Panel(22,100, 4 + 12, 1);
+    start_color();
+    init_pair(COLOR::BLACK, COLOR_BLACK, COLOR_BLACK);
+    init_pair(COLOR::WHITE, COLOR_WHITE, COLOR_WHITE);
+    init_pair(COLOR::RED, COLOR_RED, COLOR_RED);
+    init_pair(COLOR::MAGENTA, COLOR_MAGENTA, COLOR_MAGENTA);
+    init_pair(COLOR::YELLOW, COLOR_YELLOW, COLOR_YELLOW);
+    init_pair(COLOR::GREEN, COLOR_GREEN, COLOR_GREEN);
+    init_pair(COLOR::CYAN, COLOR_CYAN, COLOR_CYAN);
+    init_pair(COLOR::BLUE, COLOR_BLUE, COLOR_BLUE);
+    display = new Panel(22, 43, 4 + 12 + 22, 25);
 
-    update_panels();
-    doupdate();
     redraw();
     take_input();
     endwin();
@@ -98,8 +101,7 @@ void Terminal::take_input()
         {
             case KEY_LEFT:
                 menu_driver(menu, REQ_LEFT_ITEM);
-                break;
-            case KEY_RIGHT:
+                break; case KEY_RIGHT:
                 menu_driver(menu, REQ_RIGHT_ITEM);
                 break;
             case 10:
@@ -132,54 +134,51 @@ void Terminal::take_input()
     } 
 }
 
-
-void Terminal::redraw_reg() 
-{
-    wclear(reg);
-    box(reg_border, 0, 0);
-
-    wprintw(reg, emu->to_string().c_str());
-
-    wnoutrefresh(reg_border);
-    wnoutrefresh(reg);
-}
 void Terminal::redraw_code() 
 {
 
-    wclear(code);
     Instruction * inst = emu->get_current_inst();
-    box(code_border, 0, 0);
-
+    code->clear();
     if (inst != nullptr) {
         vector<string> window = inst->get_window();
         for (const auto &w: window) {
-            wprintw(code, w.c_str()); 
-            wprintw(code, "\n"); 
+            code->write(w.c_str()); 
+            code->write("\n"); 
         }
     }
-
-    wnoutrefresh(code_border);
-    wnoutrefresh(code);
+    code->refresh();
 }
 
-void Terminal::redraw_memory()
-{
-    wclear(memory);
-    box(memory_border, 0, 0);
-
-    wprintw(memory, emu->mem->to_string(memory_view).c_str()); 
-    wnoutrefresh(memory_border);
-    wnoutrefresh(memory);
-
-}
 void Terminal::redraw() 
 {
-
-    redraw_reg();
+    reg->redraw(emu->to_string().c_str());
     redraw_code();
-    redraw_memory();
+    memory->redraw(emu->mem->to_string(memory_view).c_str());
+    redraw_display();
     update_panels();
     doupdate();
+}
+
+void Terminal::redraw_display() 
+{
+    if (display == nullptr) return;
+    display->clear();
+    int start = 0xc000;
+    for (int i = 0; i < 20; i++) {
+        for (int  t = 0; t < 40; t++) {
+            uint16_t color = emu->mem->read(start + (i * 16) + t);
+            if (color < 7) {
+                COLOR c = (COLOR) color;
+                wattron(display->win, COLOR_PAIR(c));
+                waddch(display->win, ' ');
+                wattroff(display->win, COLOR_PAIR(c));
+            } else {
+                waddch(display->win, ' ');
+            }
+        }
+        waddch(display->win, '\n');
+    }
+    display->refresh();
 }
 
 void Terminal::run()

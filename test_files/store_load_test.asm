@@ -1,3 +1,5 @@
 LDA #$55
 STA $45
 ADC $45
+LDX $45
+STX $c000
