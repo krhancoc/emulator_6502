@@ -57,3 +57,11 @@ unordered_set<addressing_mode> Auxload::allowed_modes {
     ADDR_ZERY,
 };
 
+
+unordered_map<addressing_mode, size_t> Noarg::instruction_lengths {
+    {ADDR_NONE , 2},
+};
+
+unordered_set<addressing_mode> Noarg::allowed_modes {
+    ADDR_NONE,
+};

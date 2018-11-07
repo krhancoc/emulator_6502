@@ -12,6 +12,7 @@
 
 enum addressing_mode {
 	ADDR_IMM,
+	ADDR_NONE,
 	ADDR_ACC,
 	ADDR_ABSA,
 	ADDR_ABSX,
@@ -34,6 +35,8 @@ static addressing_mode parse_addr_mode(string argument)
 	std::regex word_regex(word_str);
 	std::regex address_regex(address_str);
 	std::regex immediate("\\s*#" + prefix + word_str + endline_str);
+	std::regex acc("\\s*A\\s*");
+	std::regex none("\\s*");
 	std::regex absa("\\s*" + prefix + address_str + endline_str);
 	std::regex absx("\\s*" + prefix + address_str + "\\s*,\\s*X" + "\\s*");
 	std::regex absy("\\s*" + prefix + address_str + "\\s*,\\s*Y" + "\\s*");
@@ -43,6 +46,10 @@ static addressing_mode parse_addr_mode(string argument)
 
 	if (std::regex_match(argument, immediate)) {
 		return ADDR_IMM;
+	} else if (std::regex_match(argument, none)) {
+		return ADDR_NONE;
+	} else if (std::regex_match(argument, acc)) {
+		return ADDR_ACC;
 	} else if (std::regex_match(argument, absa)) {
 		return ADDR_ABSA;
 	} else if (std::regex_match(argument, absx)) {

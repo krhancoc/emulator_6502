@@ -2,6 +2,6 @@ JMP end
 INX
 INX
 end:
-INA
+ADC #$01
 INX
 INX

@@ -106,26 +106,20 @@ Instruction * parse(string line, Emulator * emu)
 	    return new LDX(emu, line);
     } else if (!command.compare("LDY")) {
 	    return new LDY(emu, line);
+    } else if (!command.compare("INX")) {
+	    return new INX(emu, line);
     } else if (!command.compare("JMP")) {
-	    //Add when we add the Jump instruction
+	    vector<string> arguments;
+	    string token;
+	    istringstream args(line); 
+	    while(getline(args, token, ' ')){
+	    	arguments.push_back(token);
+	    }
+            return parse_two_arg(arguments, emu, line);
     } else {
-	/* Uncomment after we remove the code below */
-//	throw("Invalid opcode");
+	throw "Invalid opcode";
     }
 
-    /* XXX Integrate into the above */
-    vector<string> arguments;
-    string token;
-    istringstream args(line); 
-    while(getline(args, token, ' ')){
-        arguments.push_back(token);
-    }
-    switch (arguments.size()) {
-        case 2:
-            return parse_two_arg(arguments, emu, line);
-            break;
-    }
-    return 0;
 }
 
 
