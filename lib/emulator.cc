@@ -51,25 +51,10 @@ Value * determine_value(string arg) {
     throw invalid_argument("Invalid instruction");
 }
 
-Instruction * parse_one_arg(vector<string> arguments, Emulator * emu, string line) 
-{
-    string arg = arguments[0];
-    char back = arg.back();
-    if (check_prefix("IN", arg)) {
-        return new INC(get_target(arg), emu, line);
-    } else if (back == ':'){
-        return new Label(arg.substr(0, arg.length() - 1), line);
-    }
-    throw invalid_argument("Invalid instruction");
-};
-
 Instruction * parse_two_arg(vector<string> arguments, Emulator * emu, string line) 
 {
     string inst = arguments[0];
-    if (check_prefix("ADC", inst)) {
-        Value * val = determine_value(arguments[1]);
-        return new ADC(emu, line);
-    } else if (check_prefix("JMP", inst)) {
+    if (check_prefix("JMP", inst)) {
         return new JMP(arguments[1], emu, line);
     }
     throw invalid_argument("Invalid instruction");
@@ -77,11 +62,6 @@ Instruction * parse_two_arg(vector<string> arguments, Emulator * emu, string lin
 
 Instruction * parse(string line, Emulator * emu)
 {
-    vector<string> arguments;
-    string token;
-    istringstream args(line); while(getline(args, token, ' ')){
-        arguments.push_back(token);
-    }
 
     // NOTE: Parsing only works if there is no whitespace at the beginning
     // of the line. It can be solved by trimming, but C++ has
@@ -97,7 +77,6 @@ Instruction * parse(string line, Emulator * emu)
 	    return new CMP(emu, line);
     } else if (!command.compare("EOR")) {
 	    return new EOR(emu, line);
-    } else if (!command.compare("JMP")) {
     } else if (!command.compare("LDA")) {
 	    return new LDA(emu, line);
     } else if (!command.compare("ORA")) {
@@ -106,14 +85,40 @@ Instruction * parse(string line, Emulator * emu)
 	    return new SBC(emu, line);
     } else if (!command.compare("STA")) {
 	    return new STA(emu, line);
+    } else if (!command.compare("LSR")) {
+	    return new LSR(emu, line);
+    } else if (!command.compare("ASL")) {
+	    return new ASL(emu, line);
+    } else if (!command.compare("ROL")) {
+	    return new ROL(emu, line);
+    } else if (!command.compare("ROR")) {
+	    return new ROR(emu, line);
+    } else if (!command.compare("INC")) {
+	    return new INC(emu, line);
+    } else if (!command.compare("DEC")) {
+	    return new DEC(emu, line);
+    } else if (!command.compare("LDX")) {
+	    return new LDX(emu, line);
+    } else if (!command.compare("STX")) {
+	    return new STX(emu, line);
+    } else if (!command.compare("LDX")) {
+	    return new LDX(emu, line);
+    } else if (!command.compare("LDY")) {
+	    return new LDY(emu, line);
+    } else if (!command.compare("JMP")) {
+	    //Add when we add the Jump instruction
     } else {
+	/* Uncomment after we remove the code below */
 //	throw("Invalid opcode");
     }
 
+    /* XXX Integrate into the above */
+    vector<string> arguments;
+    string token;
+    istringstream args(line); while(getline(args, token, ' ')){
+        arguments.push_back(token);
+    }
     switch (arguments.size()) {
-        case 1:
-            return parse_one_arg(arguments, emu, line);
-            break;
         case 2:
             return parse_two_arg(arguments, emu, line);
             break;
