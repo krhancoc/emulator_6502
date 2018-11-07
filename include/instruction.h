@@ -218,11 +218,12 @@ public:
 class Label : public Instruction {
 private:
 public:
+    string label;
+
     Label(string value, string l) : label(value)
     {
         line = l;
     };
-    string label;
     void run(){};
 };
 

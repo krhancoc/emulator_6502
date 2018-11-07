@@ -63,6 +63,15 @@ Instruction * parse_two_arg(vector<string> arguments, Emulator * emu, string lin
 
 Instruction * parse(string line, Emulator * emu)
 {
+    /* Check if it's a label*/
+    std::regex label_regex("\\s*[a-zA-Z]+\\s*:\\s*");
+    std::regex name_regex("[a-zA-Z]+");
+
+    if (regex_match(line, label_regex)) {
+	    std::smatch m;
+	    std::regex_search(line, m, name_regex);
+	    return new Label(m[0].str(), line);
+    }
 
     // NOTE: Parsing only works if there is no whitespace at the beginning
     // of the line. It can be solved by trimming, but C++ has
