@@ -33,6 +33,8 @@ Reg get_target(string arg)
             return Reg::A;
 		case 'P':
 			return Reg::P;
+		case 'S':
+			return Reg::S; 
     }
     throw invalid_argument("Invalid instruction");
 }
@@ -230,5 +232,6 @@ void Emulator::jump_to(string label)
 void Emulator::reset(){
     pc = a = x = y = current_inst = 0;
 	p = 0x20;
+	s = 0;
 };
 

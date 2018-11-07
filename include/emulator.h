@@ -15,7 +15,7 @@
 
 using namespace std;
 
-enum class Reg { X, Y, A, P};
+enum class Reg { X, Y, A, P, S};
 typedef uint16_t address;
 typedef uint8_t word;
 
@@ -81,11 +81,11 @@ struct state {
     word x;
     word y;
     word p;
+	word s;
     word *internal_memory;
 };
 
-class Emulator {
-    
+class Emulator { 
     vector<Instruction *> program;
     address current_inst  = 0;
     unordered_map<string, address> labels;
@@ -95,23 +95,28 @@ class Emulator {
     word y = 0;
     // only keep the bit 5 always be 1 (bit order 7->0)
     word p = 0x20;
+	// start point of the stack 
+	word s = 0;
 public:
     // to get flag bit, do AND for corrsponding p_bit and P, and test if larger than 0(true)
     // to set flag bit, do OR or (P & ~p_bit[])
     const word p_bit[8] = {
 	    0x1, 0x2, 0x4, 0x8, 0x10, 0x20, 0x40, 0x80
     };
+	const address stack_base = 0x100;
 
     Memory * mem = new Memory();
     Clock * clock = new Clock(1);
     unordered_map<Reg, word *> quick_map {
-        {Reg::X, &x}, {Reg::A, &a}, {Reg::Y, &y}, {Reg::P, &p}
+        {Reg::X, &x}, {Reg::A, &a}, {Reg::Y, &y}, 
+		{Reg::P, &p}, {Reg::S, &s}
     };
 
     void increment_pc(uint16_t val)
     {
         pc += val;
     }
+
     Instruction * get_current_inst() {
         if (current_inst >= program.size()) {
             return nullptr;         
@@ -122,7 +127,7 @@ public:
     word get_x() { return x; }
     word get_y() { return y; }
     word get_p() { return p; }
-
+	word get_s() { return s; }
 
     state run()
     {
@@ -135,7 +140,8 @@ public:
             .a = a,
             .x = x,
             .y = y,
-	    .p = p,
+			.p = p,
+			.s = s,
             .internal_memory = mem->internal_memory
         };
     };
@@ -153,6 +159,7 @@ public:
        ss << "X : " << static_cast<unsigned>((unsigned char) x) << endl;
        ss << "Y : " << static_cast<unsigned>((unsigned char) y) << endl;
        ss << "P : " << static_cast<unsigned>((unsigned char) p) << endl;
+	   ss << "S : " << static_cast<unsigned>((unsigned char) s) << endl;
        return ss.str();
     };
 
