@@ -178,7 +178,7 @@ public:
 typedef TRANSFER<Reg::A, Reg::X> TAX;
 typedef TRANSFER<Reg::X, Reg::A> TXA;
 typedef TRANSFER<Reg::A, Reg::Y> TAY;
-typedef TRANSFER<Reg::Y, Reg::Y> TYA;
+typedef TRANSFER<Reg::Y, Reg::A> TYA;
 typedef INCREMENT<Reg::X, 1> INX;
 typedef INCREMENT<Reg::X, -1> DEX;
 typedef INCREMENT<Reg::Y, 1> INY;
