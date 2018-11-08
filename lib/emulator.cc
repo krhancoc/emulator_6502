@@ -108,6 +108,8 @@ Instruction * parse(string line, Emulator * emu)
 	    return new ROR(emu, line);
     } else if (!command.compare("INC")) {
 	    return new INC(emu, line);
+    } else if (!command.compare("BIT")) {
+	    return new BIT(emu, line);
     } else if (!command.compare("INY")) {
 	    return new INY(emu, line);
     } else if (!command.compare("DEC")) {
@@ -124,6 +126,10 @@ Instruction * parse(string line, Emulator * emu)
 	    return new LDY(emu, line);
     } else if (!command.compare("INX")) {
             return new INX(emu, line);
+    } else if (!command.compare("DEX")) {
+            return new DEX(emu, line);
+    } else if (!command.compare("DEY")) {
+            return new DEY(emu, line);
     } else if (!command.compare("CLC")) {
             return new CLC(emu, line);
     } else if (!command.compare("SEC")) {
@@ -142,8 +148,12 @@ Instruction * parse(string line, Emulator * emu)
             return new TXS(emu, line);
     } else if (!command.compare("TXA")) {
             return new TXA(emu, line);
+    } else if (!command.compare("TAX")) {
+            return new TAX(emu, line);
     } else if (!command.compare("TYA")) {
             return new TYA(emu, line);
+    } else if (!command.compare("TAY")) {
+            return new TAY(emu, line);
     } else if (!command.compare("TSX")) {
             return new TSX(emu, line);
     } else if (!command.compare("PHA")) {

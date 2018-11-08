@@ -46,8 +46,8 @@ static addressing_mode parse_addr_mode(string argument)
 	std::regex absy("\\s*" + prefix + address_str + "\\s*,\\s*Y" + "\\s*");
 	std::regex zera("\\s*" + prefix + word_str + endline_str);
 	std::regex zerx("\\s*" + prefix + word_str + "\\s*,\\s*X" + "\\s*");
-	std::regex indx("\\s*\\(\\s*" + prefix + address_str + "\\s*,\\s*X\\s*\\)" + "\\s*");
-	std::regex indy("\\s*\\(\\s*" + prefix + address_str + "\\s*\\)\\s*,\\s*Y" + "\\s*");
+	std::regex indx("\\s*\\(\\s*" + prefix + word_str + "\\s*,\\s*X\\s*\\)" + "\\s*");
+	std::regex indy("\\s*\\(\\s*" + prefix + word_str + "\\s*\\)\\s*,\\s*Y" + "\\s*");
 	std::regex label("\\s*" + label_str + "\\s*");
 
 

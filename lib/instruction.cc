@@ -80,3 +80,15 @@ unordered_set<addressing_mode> Branch::allowed_modes {
 
 
 
+unordered_map<addressing_mode, size_t> BIT::instruction_lengths {
+    {ADDR_ZERA, 2},
+    {ADDR_ABSA, 3},
+};
+
+unordered_set<addressing_mode> BIT::allowed_modes {
+    ADDR_ZERA,
+    ADDR_ABSA,
+};
+
+
+

@@ -11,32 +11,6 @@ public:
 	    : InstructionGroup(e, l, instruction_lengths, allowed_modes) {}
 };
 
-class INX: public Noarg {
-public:
-    INX(Emulator * e, string l) : Noarg(e, l) {};
-    void run()
-    {
-	Reg xreg = Reg::X;
-	// Weird way to write it, but the compiler was complaining,
-	// will look into it later
-	*emu->quick_map[xreg] = *emu->quick_map[xreg] + 1;
-    }
-
-};
-
-class INY: public Noarg {
-public:
-    INY(Emulator * e, string l) : Noarg(e, l) {};
-    void run()
-    {
-	Reg xreg = Reg::Y;
-	// Weird way to write it, but the compiler was complaining,
-	// will look into it later
-	*emu->quick_map[xreg] = *emu->quick_map[xreg] + 1;
-    }
-
-};
-
 
 class CLC: public Noarg {
 public:
@@ -125,25 +99,6 @@ public:
 
 };
 
-class TXA: public Noarg {
-public:
-    TXA(Emulator *e, string l) : Noarg(e, l) {};
-    void run() {
-            *emu->quick_map[Reg::A] = *emu->quick_map[Reg::X];	
-    }
-
-};
-
-class TYA: public Noarg {
-public:
-    TYA(Emulator *e, string l) : Noarg(e, l) {};
-    void run() {
-            *emu->quick_map[Reg::A] = *emu->quick_map[Reg::Y];	
-    }
-
-};
-
-
 
 class PHA: public Noarg {
 public:
@@ -200,6 +155,35 @@ public:
 
 
 };
+
+template <Reg R, int N>
+class INCREMENT: public Noarg {
+public:
+    INCREMENT(Emulator *e, string l): Noarg(e, l) {}
+    void run() {
+	*emu->quick_map[R] = *emu->quick_map[R] + N;
+    }
+};
+
+
+template <Reg R, Reg S>
+class TRANSFER: public Noarg {
+public:
+    TRANSFER(Emulator *e, string l): Noarg(e, l) {}
+    void run() {
+	*emu->quick_map[S] = *emu->quick_map[R];
+    }
+};
+
+typedef TRANSFER<Reg::A, Reg::X> TAX;
+typedef TRANSFER<Reg::X, Reg::A> TXA;
+typedef TRANSFER<Reg::A, Reg::Y> TAY;
+typedef TRANSFER<Reg::Y, Reg::Y> TYA;
+typedef INCREMENT<Reg::X, 1> INX;
+typedef INCREMENT<Reg::X, -1> DEX;
+typedef INCREMENT<Reg::Y, 1> INY;
+typedef INCREMENT<Reg::Y, -1> DEY;
+
 
 
 #endif

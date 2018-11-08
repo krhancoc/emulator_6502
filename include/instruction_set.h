@@ -6,5 +6,6 @@
 #include "noarg.h"
 #include "shift_increment.h"
 #include "branch.h"
+#include "bit.h"
 
 #endif
