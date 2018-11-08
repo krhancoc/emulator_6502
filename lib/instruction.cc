@@ -9,6 +9,8 @@ unordered_map<addressing_mode, size_t> Binary::instruction_lengths {
 	{ADDR_ABSY, 4},
 	{ADDR_ZERA, 3},
 	{ADDR_ZERX, 4},
+	{ADDR_INDX, 6},
+	{ADDR_INDY, 6}
 };
 
 unordered_set<addressing_mode> Binary::allowed_modes {

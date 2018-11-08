@@ -148,7 +148,6 @@ static word get_value(Emulator *emu, string argument, addressing_mode mode)
 
 static int get_address(Emulator *emu, string argument, addressing_mode mode)
 {
-
     std::smatch m;
     std::regex word_regex(word_str);
     std::regex address_regex(address_str);
@@ -159,25 +158,50 @@ static int get_address(Emulator *emu, string argument, addressing_mode mode)
     switch(mode) {
     case ADDR_ACC:
     case ADDR_IMM:
-            throw invalid_argument("Tried to get address from invalid mode");
+            //throw invalid_argument("Tried to get address from invalid mode");
     case ADDR_ZERA:
     case ADDR_ZERX:
     case ADDR_ZERY:
+	case ADDR_INDX:
+	case ADDR_INDY:
             std::regex_search(arg, m, word_regex);
             break;
     case ADDR_ABSA:
     case ADDR_ABSX:
     case ADDR_ABSY:
             std::regex_search(arg, m, address_regex);
-            break;
-    
+            break; 
     default:
             throw invalid_argument("Invalid addressing mode");
     }
 
     string result = m[0].str();
+	auto num = stoi(result, nullptr, 16);
+
+	word lower, higher, zero_addr;
+	stringstream ss;
+	address addr;
+
+	switch (mode) {
+		case ADDR_INDX:
+			zero_addr = num + emu->get_x();
+			lower = emu->mem->read(zero_addr);
+			higher = emu->mem->read((zero_addr + 1) % 0xFF);
+			ss << hex << (higher * 0xff + lower);
+			result = ss.str();
+			break;
+		case ADDR_INDY:
+			lower = emu->mem->read(num);
+			higher = emu->mem->read((num+1)% 0xFF);
+			addr = (address)(higher << 8) + (address)lower;
+			ss << hex << addr + emu->get_y();
+			result = ss.str();
+			break;
+		default:
+			break;
+	}
+	ss.clear();
     int address;
-    stringstream ss;
     ss << hex << result;
     ss >> address;
     return address;
@@ -343,7 +367,6 @@ public:
 	mode = parse_addr_mode(l.substr(3));
 	if (allowed_modes.find(mode) == allowed_modes.end())
 		throw invalid_argument("Invalid addressing mode");
-
 	byte_length = instruction_lengths[mode];
     };
 };
