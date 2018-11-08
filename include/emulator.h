@@ -52,7 +52,6 @@ public:
     }
     void write(address a, word data)
     { 
-        cout << "WRITE AT " << a << " WITH: " << data << endl;
         internal_memory[a] = data; 
     };
     word read(address a) { return internal_memory[a]; }
