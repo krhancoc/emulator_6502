@@ -18,9 +18,14 @@ public:
 	std::regex label_regex("[a-z][A-Za-z0-9]*");
 
 	// Get the label.
-	std::smatch m;
-	std::regex_search(l, m, label_regex);
-	label = m[0].str();	
+        vector<string> arguments;
+        string token;
+        istringstream args(line); 
+        while(getline(args, token, ' ')){
+	    arguments.push_back(token);
+	}
+        label = arguments[1].substr(0, arguments[1].size());
+
     }
 };
 
