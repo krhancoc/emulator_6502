@@ -43,6 +43,9 @@ public:
 
 class Memory {
 public:
+	const address STACK_LOW_ADDR = 0x100;
+	const address STACK_HIGH_ADDR = 0x1ff;
+
     word internal_memory[MAX_MEMORY];
     Memory() {
         memset(internal_memory, 0, MAX_MEMORY);
@@ -96,14 +99,13 @@ class Emulator {
     // only keep the bit 5 always be 1 (bit order 7->0)
     word p = 0x20;
 	// start point of the stack 
-	word s = 0;
+	word s = 0xff;
 public:
     // to get flag bit, do AND for corrsponding p_bit and P, and test if larger than 0(true)
     // to set flag bit, do OR or (P & ~p_bit[])
     const word p_bit[8] = {
 	    0x1, 0x2, 0x4, 0x8, 0x10, 0x20, 0x40, 0x80
     };
-	const address stack_base = 0x100;
 
     Memory * mem = new Memory();
     Clock * clock = new Clock(1);

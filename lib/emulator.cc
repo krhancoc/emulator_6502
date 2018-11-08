@@ -135,6 +135,18 @@ Instruction * parse(string line, Emulator * emu)
 		return new CLD(emu, line);
 	} else if (!command.compare("SED")) {
 		return new SED(emu, line);
+	} else if (!command.compare("TXS")) {
+		return new TXS(emu, line);
+	} else if (!command.compare("TSX")) {
+		return new TSX(emu, line);
+	} else if (!command.compare("PHA")) {
+		return new PHA(emu, line);
+	} else if (!command.compare("PLA")) {
+		return new PLA(emu, line);
+	} else if (!command.compare("PHP")) {
+		return new PHP(emu, line);
+	} else if (!command.compare("PLP")) {
+		return new PLP(emu, line);
 	} else if (!command.compare("JMP")) {
 		vector<string> arguments;
 	    string token;
@@ -232,6 +244,6 @@ void Emulator::jump_to(string label)
 void Emulator::reset(){
     pc = a = x = y = current_inst = 0;
 	p = 0x20;
-	s = 0;
+	s = 0xff;
 };
 
