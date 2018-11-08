@@ -24,92 +24,41 @@ public:
     }
 };
 
-class BMI: public Branch {
+
+template <unsigned int N>
+class BRC: public Branch {
 public:
-    BMI(Emulator *e, string l): Branch(e, l) {} 
+    BRC(Emulator *e, string l): Branch(e, l) {} 
     void run() {
 	    Reg preg = Reg::P;
-	    if (*emu->quick_map[preg] && emu->p_bit[7])
+	    if (!(*emu->quick_map[preg] && emu->p_bit[N]))
 		emu->jump_to(label);
+    }
 
+
+};
+
+template <unsigned int N>
+class BRS: public Branch {
+public:
+    BRS(Emulator *e, string l): Branch(e, l) {} 
+    void run() {
+	    Reg preg = Reg::P;
+	    if (*emu->quick_map[preg] && emu->p_bit[N])
+		emu->jump_to(label);
     }
 };
 
-class BPL: public Branch {
-public:
-    BPL(Emulator *e, string l): Branch(e, l) {} 
-    void run() {
-	    Reg preg = Reg::P;
-	    if (!(*emu->quick_map[preg] && emu->p_bit[7]))
-		emu->jump_to(label);
+typedef BRC<7> BPL;
+typedef BRS<7> BMI;
 
-    }
-};
+typedef BRC<6> BVC;
+typedef BRS<6> BVS;
 
-class BVC: public Branch {
-public:
-    BVC(Emulator *e, string l): Branch(e, l) {} 
-    void run() {
-	    Reg preg = Reg::P;
-	    if (!(*emu->quick_map[preg] && emu->p_bit[6]))
-		emu->jump_to(label);
+typedef BRC<1> BNE;
+typedef BRS<1> BEQ;
 
-    }
-};
-
-class BVS: public Branch {
-public:
-    BVS(Emulator *e, string l): Branch(e, l) {} 
-    void run() {
-	    Reg preg = Reg::P;
-	    if (*emu->quick_map[preg] && emu->p_bit[6])
-		emu->jump_to(label);
-
-    }
-};
-
-class BCC: public Branch {
-public:
-    BCC(Emulator *e, string l): Branch(e, l) {} 
-    void run() {
-	    Reg preg = Reg::P;
-	    if (!(*emu->quick_map[preg] && emu->p_bit[0]))
-		emu->jump_to(label);
-
-    }
-};
-
-class BCS: public Branch {
-public:
-    BCS(Emulator *e, string l): Branch(e, l) {} 
-    void run() {
-	    Reg preg = Reg::P;
-	    if (*emu->quick_map[preg] && emu->p_bit[0])
-		emu->jump_to(label);
-
-    }
-};
-
-class BNE: public Branch {
-public:
-    BNE(Emulator *e, string l): Branch(e, l) {} 
-    void run() {
-	    Reg preg = Reg::P;
-	    if (!(*emu->quick_map[preg] && emu->p_bit[1]))
-		emu->jump_to(label);
-
-    }
-};
-
-class BEQ: public Branch {
-public:
-    BEQ(Emulator *e, string l): Branch(e, l) {} 
-    void run() {
-	    Reg preg = Reg::P;
-	    if (*emu->quick_map[preg] & emu->p_bit[1])
-		emu->jump_to(label);
-
-    }
-};
+typedef BRC<0> BCC;
+typedef BRS<0> BCS;
 
 #endif
