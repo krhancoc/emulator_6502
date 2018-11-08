@@ -161,7 +161,9 @@ class INCREMENT: public Noarg {
 public:
     INCREMENT(Emulator *e, string l): Noarg(e, l) {}
     void run() {
-	*emu->quick_map[R] = *emu->quick_map[R] + N;
+	word result = *emu->quick_map[R] + N;
+	*emu->quick_map[R] = result;
+	sign_flag_check(result);
     }
 };
 
@@ -171,7 +173,9 @@ class TRANSFER: public Noarg {
 public:
     TRANSFER(Emulator *e, string l): Noarg(e, l) {}
     void run() {
-	*emu->quick_map[S] = *emu->quick_map[R];
+	word result = *emu->quick_map[R];
+	*emu->quick_map[S] = result;
+	sign_flag_check(result);
     }
 };
 

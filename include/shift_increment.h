@@ -141,7 +141,9 @@ public:
     {
 	address opaddress = get_address(emu, line, mode);
 	word current_value = get_value(emu, line, mode);
-	emu->mem->write(opaddress, current_value + 1);
+	word result = current_value + 1;
+	emu->mem->write(opaddress, result);
+	sign_flag_check(result);
     }
 };
 
@@ -153,7 +155,9 @@ public:
     {
 	address opaddress = get_address(emu, line, mode);
 	word current_value = get_value(emu, line, mode);
-	emu->mem->write(opaddress, current_value - 1);
+	word result = current_value - 1;
+	emu->mem->write(opaddress, result);
+	sign_flag_check(result);
     }
 };
 
