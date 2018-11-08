@@ -1,0 +1,46 @@
+LDY #$00
+outerloop:
+LDX #$00
+loop:
+STX $c000,Y
+INX
+INY
+TXA
+CMP #$07
+BNE loop
+LDX #$00
+TYA
+CMP #$FF
+BNE outerloop
+LDA #$ff
+STA $30
+LDA #$bf
+STA $31
+LDA #$FF
+STA $bfff
+SORT8:
+LDY #$00
+STY $32
+LDA ($30),Y
+TAX
+INY
+NXTEL:
+LDA ($30),Y
+INY
+CMP ($30),Y
+BCC CHKEND
+BEQ CHKEND
+PHA
+LDA ($30),Y
+DEY
+STA ($30),Y
+PLA
+INY
+STA ($30),Y
+LDA #$ff
+STA $32
+CHKEND:
+DEX
+BNE NXTEL
+BIT $32
+BMI SORT8
