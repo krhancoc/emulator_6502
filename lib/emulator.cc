@@ -81,8 +81,8 @@ Instruction * parse(string line, Emulator * emu)
     // of the line. It can be solved by trimming, but C++ has
     // no standard function for that. We can use Boost for that.
     string command = line.substr(0, 3);
-
-    if (!command.compare("ADC")) {
+    
+	if (!command.compare("ADC")) {
 	    return new ADC(emu, line);
     } else if (!command.compare("AND")) {
 	    return new AND(emu, line);
