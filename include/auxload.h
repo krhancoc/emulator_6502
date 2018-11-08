@@ -27,7 +27,7 @@ public:
     void run()
     {
     	Reg xreg = Reg::X;
-        *emu->quick_map[xreg] = emu->mem->read(get_address(emu, line, mode)); 
+        *emu->quick_map[xreg] = get_value(emu, line, mode); 
 	sign_flag_check(*emu->quick_map[xreg]);
     }
 };

@@ -79,9 +79,7 @@ public:
 
         uint8_t val = emu->get_a();
         uint8_t compare = get_value(emu, line, mode);
-        if (val == compare) {
-            *emu->quick_map[preg] |= 0x2;
-        }
+        sign_flag_check(val - compare);
     }
 };
 
