@@ -119,57 +119,59 @@ Instruction * parse(string line, Emulator * emu)
     } else if (!command.compare("LDY")) {
 	    return new LDY(emu, line);
     } else if (!command.compare("INX")) {
-	    return new INX(emu, line);
-	} else if (!command.compare("CLC")) {
-		return new CLC(emu, line);
-	} else if (!command.compare("SEC")) {
-		return new SEC(emu, line);
-	} else if (!command.compare("CLI")) {
-		return new CLI(emu, line);
-	} else if (!command.compare("SEI")) {
-		return new SEI(emu, line);
-	} else if (!command.compare("CLV")) {
-		return new CLV(emu, line);
-	} else if (!command.compare("CLD")) {
-		return new CLD(emu, line);
-	} else if (!command.compare("SED")) {
-		return new SED(emu, line);
-	} else if (!command.compare("TXS")) {
-		return new TXS(emu, line);
-	} else if (!command.compare("TSX")) {
-		return new TSX(emu, line);
-	} else if (!command.compare("PHA")) {
-		return new PHA(emu, line);
-	} else if (!command.compare("PLA")) {
-		return new PLA(emu, line);
-	} else if (!command.compare("PHP")) {
-		return new PHP(emu, line);
-	} else if (!command.compare("PLP")) {
-		return new PLP(emu, line);
-	} else if (!command.compare("BPL")) {
-		return new BPL(emu, line);
-	} else if (!command.compare("BMI")) {
-		return new BMI(emu, line);
-	} else if (!command.compare("BVC")) {
-		return new BVC(emu, line);
-	} else if (!command.compare("BVS")) {
-		return new BVS(emu, line);
-	} else if (!command.compare("BCC")) {
-		return new BCC(emu, line);
-	} else if (!command.compare("BCS")) {
-		return new BCS(emu, line);
-	} else if (!command.compare("BNE")) {
-		return new BNE(emu, line);
-	} else if (!command.compare("BEQ")) {
-		return new BEQ(emu, line);
-	} else if (!command.compare("JMP")) {
-		vector<string> arguments;
-	    string token;
-	    istringstream args(line); 
-	    while(getline(args, token, ' ')){
-	    	arguments.push_back(token);
-	    }
-            return parse_two_arg(arguments, emu, line);
+            return new INX(emu, line);
+    } else if (!command.compare("CLC")) {
+            return new CLC(emu, line);
+    } else if (!command.compare("SEC")) {
+            return new SEC(emu, line);
+    } else if (!command.compare("CLI")) {
+            return new CLI(emu, line);
+    } else if (!command.compare("SEI")) {
+            return new SEI(emu, line);
+    } else if (!command.compare("CLV")) {
+            return new CLV(emu, line);
+    } else if (!command.compare("CLD")) {
+            return new CLD(emu, line);
+    } else if (!command.compare("SED")) {
+            return new SED(emu, line);
+    } else if (!command.compare("TXS")) {
+            return new TXS(emu, line);
+    } else if (!command.compare("TXA")) {
+            return new TXA(emu, line);
+    } else if (!command.compare("TSX")) {
+            return new TSX(emu, line);
+    } else if (!command.compare("PHA")) {
+            return new PHA(emu, line);
+    } else if (!command.compare("PLA")) {
+            return new PLA(emu, line);
+    } else if (!command.compare("PHP")) {
+            return new PHP(emu, line);
+    } else if (!command.compare("PLP")) {
+            return new PLP(emu, line);
+    } else if (!command.compare("BPL")) {
+            return new BPL(emu, line);
+    } else if (!command.compare("BMI")) {
+            return new BMI(emu, line);
+    } else if (!command.compare("BVC")) {
+            return new BVC(emu, line);
+    } else if (!command.compare("BVS")) {
+            return new BVS(emu, line);
+    } else if (!command.compare("BCC")) {
+            return new BCC(emu, line);
+    } else if (!command.compare("BCS")) {
+            return new BCS(emu, line);
+    } else if (!command.compare("BNE")) {
+            return new BNE(emu, line);
+    } else if (!command.compare("BEQ")) {
+            return new BEQ(emu, line);
+    } else if (!command.compare("JMP")) {
+        vector<string> arguments;
+        string token;
+        istringstream args(line); 
+        while(getline(args, token, ' ')){
+            arguments.push_back(token);
+        }
+        return parse_two_arg(arguments, emu, line);
     } else {
 	throw invalid_argument("Invalid opcode");
     }

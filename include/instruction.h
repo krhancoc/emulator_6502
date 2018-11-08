@@ -123,38 +123,39 @@ static word get_value(Emulator *emu, string argument, addressing_mode mode)
 
 static int get_address(Emulator *emu, string argument, addressing_mode mode)
 {
-	std::smatch m;
-	std::regex word_regex(word_str);
-	std::regex address_regex(address_str);
 
-	//Remove the opcode, because it may contain a hex value (e.g. ADC)
-	auto arg = argument.substr(3);
+    std::smatch m;
+    std::regex word_regex(word_str);
+    std::regex address_regex(address_str);
 
-	switch(mode) {
-	case ADDR_ACC:
-	case ADDR_IMM:
-		throw invalid_argument("Tried to get address from invalid mode");
-	case ADDR_ZERA:
-	case ADDR_ZERX:
-	case ADDR_ZERY:
-		std::regex_search(arg, m, word_regex);
-		break;
-	case ADDR_ABSA:
-	case ADDR_ABSX:
-	case ADDR_ABSY:
-		std::regex_search(arg, m, address_regex);
-		break;
-	
-	default:
-		throw invalid_argument("Invalid addressing mode");
-	}
+    //Remove the opcode, because it may contain a hex value (e.g. ADC)
+    auto arg = argument.substr(3);
 
-	string result = m[0].str();
+    switch(mode) {
+    case ADDR_ACC:
+    case ADDR_IMM:
+            throw invalid_argument("Tried to get address from invalid mode");
+    case ADDR_ZERA:
+    case ADDR_ZERX:
+    case ADDR_ZERY:
+            std::regex_search(arg, m, word_regex);
+            break;
+    case ADDR_ABSA:
+    case ADDR_ABSX:
+    case ADDR_ABSY:
+            std::regex_search(arg, m, address_regex);
+            break;
+    
+    default:
+            throw invalid_argument("Invalid addressing mode");
+    }
+
+    string result = m[0].str();
     int address;
     stringstream ss;
     ss << hex << result;
     ss >> address;
-	return address;
+    return address;
 }
 
 class Instruction {

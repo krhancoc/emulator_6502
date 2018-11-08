@@ -111,6 +111,16 @@ public:
 
 };
 
+class TXA: public Noarg {
+public:
+    TXA(Emulator *e, string l) : Noarg(e, l) {};
+    void run() {
+            *emu->quick_map[Reg::A] = *emu->quick_map[Reg::X];	
+    }
+
+};
+
+
 class PHA: public Noarg {
 public:
 	PHA(Emulator *e, string l) : Noarg(e, l) {};

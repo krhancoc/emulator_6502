@@ -75,7 +75,7 @@ public:
     void run()
     {
         // Do a subtraction without saving the result, just for the flags.
-	    Reg preg = Reg::P;
+        Reg preg = Reg::P;
     	Reg accumulator = Reg::A;
 
         ssize_t result = *emu->quick_map[accumulator] - get_value(emu, line, mode) 

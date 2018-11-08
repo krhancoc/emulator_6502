@@ -1,13 +1,6 @@
-STX $c000 
+loop:
+STA $c000,X
 INX
-STX $c001
-INX
-STX $c002
-INX
-STX $c003
-INX
-STX $c004
-INX
-STX $c005
-INX
-STX $c006
+TXA
+CMP #$07
+BNE loop

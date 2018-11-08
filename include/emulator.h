@@ -87,7 +87,7 @@ struct state {
     word x;
     word y;
     word p;
-	word s;
+    word s;
     word *internal_memory;
 };
 
@@ -101,8 +101,8 @@ class Emulator {
     word y = 0;
     // only keep the bit 5 always be 1 (bit order 7->0)
     word p = 0x20;
-	// start point of the stack 
-	word s = 0xff;
+    // start point of the stack 
+    word s = 0xff;
 public:
     // to get flag bit, do AND for corrsponding p_bit and P, and test if larger than 0(true)
     // to set flag bit, do OR or (P & ~p_bit[])
@@ -121,7 +121,6 @@ public:
     {
         pc += val;
     }
-
     Instruction * get_current_inst() {
         if (current_inst >= program.size()) {
             return nullptr;         

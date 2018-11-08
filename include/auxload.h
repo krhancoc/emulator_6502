@@ -15,7 +15,7 @@ class AuxloadX: public Auxload {
 public:
     AuxloadX(Emulator *e, string l) 
 	    : Auxload(e, l) {
-	if (mode == ADDR_ABSX || mode == ADDR_ZERX)
+	if (mode == ADDR_ZERX)
 		throw "Invalid instruction";
 
     }
@@ -41,7 +41,22 @@ public:
     void run()
     {
     	Reg xreg = Reg::X;
+        vector<string> arguments;
+        string token;
+        istringstream args(line); 
+        while(getline(args, token, ',')){
+	    arguments.push_back(token);
+	}
         address a = get_address(emu, line, mode);
+        if (arguments.size() == 2) {
+            if (!arguments[1].compare("X")) {
+                a += emu->get_x();
+            } else if (!arguments[1].compare("Y")) {
+                a += emu->get_y();
+            } else if (!arguments[1].compare("A")) {
+                a += emu->get_a();
+            }
+        }
         emu->mem->write(a, *emu->quick_map[xreg]); 
     }
 };
