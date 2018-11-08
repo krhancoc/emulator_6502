@@ -207,9 +207,10 @@ static int get_address(Emulator *emu, string argument, addressing_mode mode)
     ss >> addre;
 	addre = 0;
 	for (int i=0;i<result.length();i++) {
-		addre += (result[i]-48) * std::pow(16, result.length()-i-1);
+		//cout<<result[i]<<" "<<addre<<"  "<< std::pow(16, result.length()-i-1)<<endl;
+		addre += (result[i] - (result[i]<=57?48:87)) * std::pow(16, result.length()-i-1);
 	}
-	cout<<"in:"<<result<<"  out:"<<addre<<endl;
+//	cout<<"in:"<<result<<"  out:"<<addre<<endl;
     return addre;
 }
 
