@@ -82,7 +82,6 @@ Instruction * parse(string line, Emulator * emu)
     // no standard function for that. We can use Boost for that.
     string command = line.substr(0, 3);
 
-    
     if (!command.compare("ADC")) {
 	    return new ADC(emu, line);
     } else if (!command.compare("AND")) {
@@ -158,7 +157,6 @@ Instruction * parse(string line, Emulator * emu)
     } else {
 	throw "Invalid opcode";
     }
-
 }
 
 

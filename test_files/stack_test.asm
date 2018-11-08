@@ -1,1 +1,10 @@
+LDA #$15
+LDA #$15
+LDA #$15
+PHA
+LDA #$10
+PLA
 PHP
+SED
+SEI
+PLP

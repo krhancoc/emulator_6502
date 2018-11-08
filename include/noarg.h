@@ -132,8 +132,8 @@ public:
 		Reg areg = Reg::A;
 		Reg sreg = Reg::S;
 
-		*emu->quick_map[areg] = emu->mem->read((*emu->mem).STACK_LOW_ADDR + *emu->quick_map[sreg]);
 		*emu->quick_map[sreg] = *emu->quick_map[sreg] + 0x1;
+		*emu->quick_map[areg] = emu->mem->read((*emu->mem).STACK_LOW_ADDR + *emu->quick_map[sreg]);
 	}
 };
 
@@ -156,12 +156,12 @@ public:
 		Reg sreg = Reg::S;
 		Reg preg = Reg::P;
 
+		*emu->quick_map[sreg] = *emu->quick_map[sreg] - 0x1;
 		word p_reg_new_val = emu->mem->read((*emu->mem).STACK_LOW_ADDR + *emu->quick_map[sreg]);
 		word p_reg_old_val = *emu->quick_map[preg];
 		p_reg_new_val &= 0x11001111;
 		p_reg_new_val |= (p_reg_old_val & 0x00110000);
 		*emu->quick_map[preg] = p_reg_new_val;	
-		*emu->quick_map[sreg] = *emu->quick_map[sreg] - 0x1;
 	}
 
 
