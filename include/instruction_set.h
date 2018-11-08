@@ -5,5 +5,6 @@
 #include "binary.h"
 #include "noarg.h"
 #include "shift_increment.h"
+#include "branch.h"
 
 #endif

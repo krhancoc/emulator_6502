@@ -63,5 +63,16 @@ unordered_map<addressing_mode, size_t> Noarg::instruction_lengths {
 };
 
 unordered_set<addressing_mode> Noarg::allowed_modes {
-	ADDR_NONE,
+    ADDR_NONE,
 };
+
+unordered_map<addressing_mode, size_t> Branch::instruction_lengths {
+    {ADDR_LABEL, 2},
+};
+
+unordered_set<addressing_mode> Branch::allowed_modes {
+    ADDR_LABEL,
+};
+
+
+

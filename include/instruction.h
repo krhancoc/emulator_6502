@@ -20,6 +20,7 @@ enum addressing_mode {
 	ADDR_ZERA,
 	ADDR_ZERX,
 	ADDR_ZERY,
+	ADDR_LABEL,
 }; 
 
 
@@ -28,6 +29,7 @@ static string prefix = "\\$";
 static string word_str = "([0-9a-fA-F]{2})";
 static string address_str = "([0-9a-fA-F]{4})";
 static string endline_str = "\\s*";
+static string label_str("[a-zA-Z][a-zA-Z0-9]*");
 
 static addressing_mode parse_addr_mode(string argument)
 {
@@ -42,6 +44,7 @@ static addressing_mode parse_addr_mode(string argument)
 	std::regex absy("\\s*" + prefix + address_str + "\\s*,\\s*Y" + "\\s*");
 	std::regex zera("\\s*" + prefix + word_str + endline_str);
 	std::regex zerx("\\s*" + prefix + word_str + "\\s*,\\s*X" + "\\s*");
+	std::regex label("\\s*" + label_str + "\\s*");
 
 
 	if (std::regex_match(argument, immediate)) {
@@ -60,8 +63,10 @@ static addressing_mode parse_addr_mode(string argument)
 		return ADDR_ZERA;
 	} else if (std::regex_match(argument, zerx)) {
 		return ADDR_ZERX;
+	} else if (std::regex_match(argument, label)) {
+		return ADDR_LABEL;
 	} else {
-		throw "Invalid instruction";
+		throw invalid_argument("Invalid instruction");
 	}
 
 }
@@ -92,7 +97,7 @@ static word get_value(Emulator *emu, string argument, addressing_mode mode)
 		break;
 	
 	default:
-		throw "Invalid addressing mode";
+		throw invalid_argument("Invalid addressing mode");
 	}
 
 	string result = m[0].str();
@@ -111,7 +116,7 @@ static word get_value(Emulator *emu, string argument, addressing_mode mode)
 	case ADDR_ABSY:
 		return emu->mem->read(num + emu->get_y());
 	default:
-		throw "Invalid addressing mode";
+		throw invalid_argument("Invalid addressing mode");
 	}
 
 }
@@ -128,7 +133,7 @@ static int get_address(Emulator *emu, string argument, addressing_mode mode)
 	switch(mode) {
 	case ADDR_ACC:
 	case ADDR_IMM:
-		throw "Tried to get address from invalid mode";
+		throw invalid_argument("Tried to get address from invalid mode");
 	case ADDR_ZERA:
 	case ADDR_ZERX:
 	case ADDR_ZERY:
@@ -141,7 +146,7 @@ static int get_address(Emulator *emu, string argument, addressing_mode mode)
 		break;
 	
 	default:
-		throw "Invalid addressing mode";
+		throw invalid_argument("Invalid addressing mode");
 	}
 
 	string result = m[0].str();
@@ -291,7 +296,7 @@ public:
 		    unordered_set<addressing_mode> allowed_modes) : Instruction(e, l) {
 	mode = parse_addr_mode(l.substr(3));
 	if (allowed_modes.find(mode) == allowed_modes.end())
-		throw "Invalid addressing mode";
+		throw invalid_argument("Invalid addressing mode");
 
 	byte_length = instruction_lengths[mode];
     };

@@ -68,8 +68,8 @@ Instruction * parse_two_arg(vector<string> arguments, Emulator * emu, string lin
 Instruction * parse(string line, Emulator * emu)
 {
     /* Check if it's a label*/
-    std::regex label_regex("\\s*[a-zA-Z]+\\s*:\\s*");
-    std::regex name_regex("[a-zA-Z]+");
+    std::regex label_regex("\\s*[a-zA-Z][a-zA-Z0-9]*\\s*:\\s*");
+    std::regex name_regex("[a-zA-Z][a-zA-Z0-9]*");
 
     if (regex_match(line, label_regex)) {
 	    std::smatch m;
@@ -146,6 +146,22 @@ Instruction * parse(string line, Emulator * emu)
 		return new PHP(emu, line);
 	} else if (!command.compare("PLP")) {
 		return new PLP(emu, line);
+	} else if (!command.compare("BPL")) {
+		return new BPL(emu, line);
+	} else if (!command.compare("BMI")) {
+		return new BMI(emu, line);
+	} else if (!command.compare("BVC")) {
+		return new BVC(emu, line);
+	} else if (!command.compare("BVS")) {
+		return new BVS(emu, line);
+	} else if (!command.compare("BCC")) {
+		return new BCC(emu, line);
+	} else if (!command.compare("BCS")) {
+		return new BCS(emu, line);
+	} else if (!command.compare("BNE")) {
+		return new BNE(emu, line);
+	} else if (!command.compare("BEQ")) {
+		return new BEQ(emu, line);
 	} else if (!command.compare("JMP")) {
 		vector<string> arguments;
 	    string token;
@@ -155,7 +171,7 @@ Instruction * parse(string line, Emulator * emu)
 	    }
             return parse_two_arg(arguments, emu, line);
     } else {
-	throw "Invalid opcode";
+	throw invalid_argument("Invalid opcode");
     }
 }
 
