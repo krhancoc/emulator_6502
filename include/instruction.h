@@ -159,6 +159,22 @@ protected:
     uint16_t byte_length = 0;
     string line = "";
     vector<string> code_window;
+
+    void sign_flag_check(ssize_t result) {
+	Reg preg = Reg::P;
+	// Check for zero value
+	if (result)
+		*emu->quick_map[preg] |= (emu->p_bit)[1];
+	else 
+		*emu->quick_map[preg] &= ~(emu->p_bit)[1];
+
+	// Check for negative value
+	if (result & 0x80)
+		*emu->quick_map[preg] |= (emu->p_bit)[7];
+	else
+		*emu->quick_map[preg] &= ~(emu->p_bit)[7];
+    }
+
 public:
     Instruction() {}
     Instruction(Emulator *e, string l): emu(e), line(l) {

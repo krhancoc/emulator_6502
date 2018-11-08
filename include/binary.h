@@ -7,22 +7,6 @@ class Binary: public InstructionGroup {
     static unordered_map<addressing_mode, size_t> instruction_lengths; 
     static unordered_set<addressing_mode> allowed_modes;
 
-protected:
-    void binary_flag_checks(ssize_t result) {
-
-	Reg preg = Reg::P;
-	// Check for zero value
-	if (result)
-		*emu->quick_map[preg] |= (emu->p_bit)[1];
-	else 
-		*emu->quick_map[preg] &= ~(emu->p_bit)[1];
-
-	// Check for negative value
-	if (result & 0x80)
-		*emu->quick_map[preg] |= (emu->p_bit)[7];
-	else
-		*emu->quick_map[preg] &= ~(emu->p_bit)[7];
-    }
 public:
     Binary(Emulator *e, string l) 
 	    : InstructionGroup(e, l, instruction_lengths, allowed_modes) {}
@@ -34,7 +18,7 @@ protected:
 	void addition_flag_checks(ssize_t result) { 
 	    Reg preg = Reg::P;
 
-		binary_flag_checks(result);
+		sign_flag_check(result);
 
 		// Check for carry 
 		if (result > 0xFF)
@@ -80,7 +64,7 @@ public:
         *emu->quick_map[accumulator] = 
 		*emu->quick_map[accumulator] & get_value(emu, line, mode);
 
-	    binary_flag_checks(*emu->quick_map[accumulator]);
+	    sign_flag_check(*emu->quick_map[accumulator]);
     }
 };
 
@@ -110,7 +94,7 @@ public:
         *emu->quick_map[accumulator] = 
 		*emu->quick_map[accumulator] ^  get_value(emu, line, mode);
 
-        binary_flag_checks(*emu->quick_map[accumulator]);
+        sign_flag_check(*emu->quick_map[accumulator]);
     }
 };
 
@@ -125,7 +109,7 @@ public:
         word result = get_value(emu, line, mode);
         *emu->quick_map[accumulator] = result;
 
-        binary_flag_checks(result);
+        sign_flag_check(result);
     }
 };
 
@@ -140,7 +124,7 @@ public:
         *emu->quick_map[accumulator] = 
 		*emu->quick_map[accumulator] | get_value(emu, line, mode);
 
-        binary_flag_checks(*emu->quick_map[accumulator]);
+        sign_flag_check(*emu->quick_map[accumulator]);
     }
 };
 

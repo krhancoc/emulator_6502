@@ -29,6 +29,8 @@ public:
     {
     	Reg xreg = Reg::X;
         *emu->quick_map[xreg] = emu->mem->read(get_address(emu, line, mode)); 
+
+	sign_flag_check(*emu->quick_map[xreg]);
     }
 };
 
@@ -61,7 +63,8 @@ public:
     void run()
     {
     	Reg yreg = Reg::Y;
-        emu->mem->write(get_address(emu, line, mode), *emu->quick_map[yreg]); 
+        *emu->quick_map[yreg] = emu->mem->read(get_address(emu, line, mode)); 
+	sign_flag_check(*emu->quick_map[yreg]);
     }
 };
 
@@ -72,7 +75,7 @@ public:
     void run()
     {
     	Reg yreg = Reg::Y;
-        *emu->quick_map[yreg] = emu->mem->read(get_address(emu, line, mode)); 
+        emu->mem->write(get_address(emu, line, mode), *emu->quick_map[yreg]); 
     }
 };
 
