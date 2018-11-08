@@ -15,8 +15,7 @@ string choices[7] = {
 };
 
 void Terminal::init_menu() 
-{
-    ITEM * items[7];
+{ ITEM * items[7];
     for (int i = 0; i < 7; i++) {
         items[i] = new_item(choices[i].c_str(), choices[i].c_str());
     }
@@ -166,7 +165,7 @@ void Terminal::redraw_display()
     int start = 0xc000;
     for (int i = 0; i < 20; i++) {
         for (int  t = 0; t < 40; t++) {
-            uint16_t color = emu->mem->read(start + (i * 16) + t);
+            uint16_t color = emu->mem->read(start + (i * 40) + t);
             if (color < 7) {
                 COLOR c = (COLOR) color;
                 wattron(display->win, COLOR_PAIR(c));

@@ -1,13 +1,16 @@
+LDY #$00
+outerloop:
+LDX #$00
 loop:
-STX $c000,X
+STX $c000,Y
 INX
+INY
 TXA
 CMP #$07
 BNE loop
-CMP #$00
-loop2:
-STY $c000,Y
-INY
+LDX #$00
 TYA
-CMP #$07
-BNE loop2
+CMP #$FF
+BNE outerloop
+
+

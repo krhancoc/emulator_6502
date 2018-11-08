@@ -75,9 +75,9 @@ public:
     LDY(Emulator * e, string l) : AuxloadY(e, l) {}
     void run()
     {
-    	Reg yreg = Reg::Y;
-        *emu->quick_map[yreg] = emu->mem->read(get_address(emu, line, mode)); 
-	sign_flag_check(*emu->quick_map[yreg]);
+    	Reg xreg = Reg::Y;
+        *emu->quick_map[xreg] = get_value(emu, line, mode); 
+	sign_flag_check(*emu->quick_map[xreg]);
     }
 };
 
