@@ -30,8 +30,7 @@ class BRC: public Branch {
 public:
     BRC(Emulator *e, string l): Branch(e, l) {} 
     void run() {
-	    Reg preg = Reg::P;
-	    if (!(*emu->quick_map[preg] && emu->p_bit[N]))
+	    if (!(emu->get_p() & (1 << N)))
 		emu->jump_to(label);
     }
 
@@ -43,8 +42,7 @@ class BRS: public Branch {
 public:
     BRS(Emulator *e, string l): Branch(e, l) {} 
     void run() {
-	    Reg preg = Reg::P;
-	    if (*emu->quick_map[preg] && emu->p_bit[N])
+	    if ((emu->get_p() & (1 << N)))
 		emu->jump_to(label);
     }
 };

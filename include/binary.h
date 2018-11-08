@@ -76,11 +76,12 @@ public:
     {
         // Do a subtraction without saving the result, just for the flags.
         Reg preg = Reg::P;
-    	Reg accumulator = Reg::A;
 
-        ssize_t result = *emu->quick_map[accumulator] - get_value(emu, line, mode) 
-                        - (1 - (*emu->quick_map[preg] & 0x01));
-        addition_flag_checks(result);
+        uint8_t val = emu->get_a();
+        uint8_t compare = get_value(emu, line, mode);
+        if (val == compare) {
+            *emu->quick_map[preg] |= 0x2;
+        }
     }
 };
 

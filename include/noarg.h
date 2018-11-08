@@ -24,6 +24,20 @@ public:
 
 };
 
+class INY: public Noarg {
+public:
+    INY(Emulator * e, string l) : Noarg(e, l) {};
+    void run()
+    {
+	Reg xreg = Reg::Y;
+	// Weird way to write it, but the compiler was complaining,
+	// will look into it later
+	*emu->quick_map[xreg] = *emu->quick_map[xreg] + 1;
+    }
+
+};
+
+
 class CLC: public Noarg {
 public:
 	CLC(Emulator *e, string l) : Noarg(e, l) {};
@@ -119,6 +133,16 @@ public:
     }
 
 };
+
+class TYA: public Noarg {
+public:
+    TYA(Emulator *e, string l) : Noarg(e, l) {};
+    void run() {
+            *emu->quick_map[Reg::A] = *emu->quick_map[Reg::Y];	
+    }
+
+};
+
 
 
 class PHA: public Noarg {

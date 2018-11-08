@@ -1,6 +1,5 @@
 #ifndef __AUXLOAD_H__
 #define __AUXLOAD_H__
-
 #include "instruction.h"
 
 class Auxload: public InstructionGroup {
@@ -29,7 +28,6 @@ public:
     {
     	Reg xreg = Reg::X;
         *emu->quick_map[xreg] = emu->mem->read(get_address(emu, line, mode)); 
-
 	sign_flag_check(*emu->quick_map[xreg]);
     }
 };
@@ -65,7 +63,7 @@ class AuxloadY: public Auxload {
 public:
     AuxloadY(Emulator *e, string l) 
 	    : Auxload(e, l) {
-	if (mode == ADDR_ABSY || mode == ADDR_ZERY)
+	if (mode == ADDR_ZERY)
 		throw "Invalid instruction";
 
     }
@@ -89,8 +87,25 @@ public:
     STY(Emulator * e, string l) : AuxloadY(e, l) {}
     void run()
     {
-    	Reg yreg = Reg::Y;
-        emu->mem->write(get_address(emu, line, mode), *emu->quick_map[yreg]); 
+        Reg reg = Reg::Y;
+        vector<string> arguments;
+        string token;
+        istringstream args(line); 
+        while(getline(args, token, ',')){
+	    arguments.push_back(token);
+	}
+        address a = get_address(emu, line, mode);
+        if (arguments.size() == 2) {
+            if (!arguments[1].compare("X")) {
+                a += emu->get_x();
+            } else if (!arguments[1].compare("Y")) {
+                a += emu->get_y();
+            } else if (!arguments[1].compare("A")) {
+                a += emu->get_a();
+            }
+        }
+        emu->mem->write(a, *emu->quick_map[reg]); 
+
     }
 };
 
