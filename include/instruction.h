@@ -6,6 +6,7 @@
 #include <unordered_set>
 
 #include "emulator.h"
+#include <math.h>
 
 // XXX Used for masks, probably belongs in a class 
 #define MASK(x) ((word) ((1L << x) - 1)
@@ -201,10 +202,15 @@ static int get_address(Emulator *emu, string argument, addressing_mode mode)
 			break;
 	}
 	ss.clear();
-    int address;
+    int addre;
     ss << hex << result;
-    ss >> address;
-    return address;
+    ss >> addre;
+	addre = 0;
+	for (int i=0;i<result.length();i++) {
+		addre += (result[i]-48) * std::pow(16, result.length()-i-1);
+	}
+	cout<<"in:"<<result<<"  out:"<<addre<<endl;
+    return addre;
 }
 
 class Instruction {

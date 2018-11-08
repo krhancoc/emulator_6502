@@ -51,7 +51,7 @@ public:
         memset(internal_memory, 0, MAX_MEMORY);
     }
     void write(address a, word data)
-    { 
+    {
         internal_memory[a] = data; 
     };
     word read(address a) { return internal_memory[a]; }

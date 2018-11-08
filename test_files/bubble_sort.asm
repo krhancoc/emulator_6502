@@ -2,6 +2,8 @@ LDA #$00
 STA $30
 LDA #$c0
 STA $31
+LDA #$05
+STA $c000
 LDA #$04
 STA $c001
 LDA #$05
