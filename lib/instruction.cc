@@ -18,6 +18,8 @@ unordered_set<addressing_mode> Binary::allowed_modes {
 	ADDR_ABSY,
 	ADDR_ZERA,
 	ADDR_ZERX,
+	ADDR_INDX,
+	ADDR_INDY,
     };
 
 
@@ -27,6 +29,8 @@ unordered_map<addressing_mode, size_t> Shift::instruction_lengths {
     {ADDR_ABSX, 6},
     {ADDR_ZERA, 6},
     {ADDR_ZERX, 7},
+    {ADDR_INDX, 6},
+    {ADDR_INDY, 5},
 };
 
 unordered_set<addressing_mode> Shift::allowed_modes {

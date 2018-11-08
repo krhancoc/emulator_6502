@@ -20,6 +20,8 @@ enum addressing_mode {
 	ADDR_ZERA,
 	ADDR_ZERX,
 	ADDR_ZERY,
+	ADDR_INDX,
+	ADDR_INDY,
 	ADDR_LABEL,
 }; 
 
@@ -44,6 +46,8 @@ static addressing_mode parse_addr_mode(string argument)
 	std::regex absy("\\s*" + prefix + address_str + "\\s*,\\s*Y" + "\\s*");
 	std::regex zera("\\s*" + prefix + word_str + endline_str);
 	std::regex zerx("\\s*" + prefix + word_str + "\\s*,\\s*X" + "\\s*");
+	std::regex indx("\\s*\\(\\s*" + prefix + address_str + "\\s*,\\s*X\\s*\\)" + "\\s*");
+	std::regex indy("\\s*\\(\\s*" + prefix + address_str + "\\s*\\)\\s*,\\s*Y" + "\\s*");
 	std::regex label("\\s*" + label_str + "\\s*");
 
 
@@ -63,6 +67,10 @@ static addressing_mode parse_addr_mode(string argument)
 		return ADDR_ZERA;
 	} else if (std::regex_match(argument, zerx)) {
 		return ADDR_ZERX;
+	} else if (std::regex_match(argument, indx)) {
+		return ADDR_INDX;
+	} else if (std::regex_match(argument, indy)) {
+		return ADDR_INDY;
 	} else if (std::regex_match(argument, label)) {
 		return ADDR_LABEL;
 	} else {
@@ -88,6 +96,8 @@ static word get_value(Emulator *emu, string argument, addressing_mode mode)
 	case ADDR_ZERA:
 	case ADDR_ZERX:
 	case ADDR_ZERY:
+	case ADDR_INDX:
+	case ADDR_INDY:
 		std::regex_search(arg, m, word_regex);
 		break;
 	case ADDR_ABSA:
@@ -103,6 +113,10 @@ static word get_value(Emulator *emu, string argument, addressing_mode mode)
 	string result = m[0].str();
 	auto num = stoi(result, nullptr, 16);
 
+	word lower, higher;
+	address addr;
+	word zeroaddr;
+
 	switch(mode) {
 	case ADDR_IMM:
 		return num;
@@ -115,6 +129,17 @@ static word get_value(Emulator *emu, string argument, addressing_mode mode)
 	case ADDR_ZERY:
 	case ADDR_ABSY:
 		return emu->mem->read(num + emu->get_y());
+	case ADDR_INDX:
+		zeroaddr = num + emu->get_x();
+		lower = emu->mem->read(zeroaddr);
+		higher = emu->mem->read((zeroaddr + 1) % 0xFF);
+		addr = ((address) higher << 8) + (address) lower;
+		return emu->mem->read(addr);
+	case ADDR_INDY:
+		lower = emu->mem->read(num);
+		higher = emu->mem->read((num + 1) % 0xFF);
+		addr = (address) (higher << 8) + (address) lower;
+		return emu->mem->read(addr + emu->get_y());
 	default:
 		throw invalid_argument("Invalid addressing mode");
 	}
