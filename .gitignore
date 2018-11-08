@@ -6,4 +6,4 @@ build
 .sconsign.dblite
 config.log
 SConstruct
-.core
+*.core
