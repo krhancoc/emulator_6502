@@ -39,7 +39,8 @@ public:
     void run()
     {
     	Reg xreg = Reg::X;
-        emu->mem->write(get_address(emu, line, mode), *emu->quick_map[xreg]); 
+        address a = get_address(emu, line, mode);
+        emu->mem->write(a, *emu->quick_map[xreg]); 
     }
 };
 

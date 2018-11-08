@@ -5,18 +5,46 @@
 #include <menu.h>
 
 #include "emulator.h"
+class Panel {
+public:
+    WINDOW * border;
+    WINDOW * win;
+    PANEL * panel;
+
+    Panel(int h, int w, int y, int x) {
+        border = newwin(h, w, y, x);
+        win = newwin(h-2, w-2,y+1, x+1);
+        panel = new_panel(win);
+    }
+    void clear() {
+        wclear(border);
+        wclear(win);
+    }
+
+    void write(string str) {
+        wprintw(win, str.c_str());
+    }
+    void refresh() {
+        box(border, 0, 0); 
+        wnoutrefresh(border);        
+        wnoutrefresh(win);
+    }
+    void redraw(string str) {
+        clear();
+        write(str);
+        refresh();
+    }
+};
 class Terminal {
 private:
-    WINDOW * reg;
-    WINDOW * code;
-    WINDOW * memory; 
-    WINDOW * reg_border;
-    WINDOW * code_border;
-    WINDOW * memory_border; 
+
+    Panel * reg;
+    Panel * display = nullptr;
+    Panel * code;
+    Panel * memory;
+
     WINDOW * menu_window;
-    PANEL * reg_panel;
-    PANEL * code_panel;
-    PANEL * memory_panel;
+
     PANEL * file_input_panel;
     MENU * menu;
     uint16_t memory_view = 0x0000;
@@ -30,9 +58,8 @@ public:
     void init_menu();
     void redraw_menu();
     void redraw();
-    void redraw_reg();
     void redraw_code();
-    void redraw_memory();
+    void redraw_display();
     void attach();
 
     string take_line(string message);

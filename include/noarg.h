@@ -1,6 +1,8 @@
 #ifndef __NOARG_H__
 #define __NOARG_H__
 
+#include "instruction.h"
+
 class Noarg: public InstructionGroup {
     static unordered_map<addressing_mode, size_t> instruction_lengths;
     static unordered_set<addressing_mode> allowed_modes;

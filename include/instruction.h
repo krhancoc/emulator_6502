@@ -116,7 +116,7 @@ static word get_value(Emulator *emu, string argument, addressing_mode mode)
 
 }
 
-static word get_address(Emulator *emu, string argument, addressing_mode mode)
+static int get_address(Emulator *emu, string argument, addressing_mode mode)
 {
 	std::smatch m;
 	std::regex word_regex(word_str);
@@ -145,7 +145,11 @@ static word get_address(Emulator *emu, string argument, addressing_mode mode)
 	}
 
 	string result = m[0].str();
-	return stoi(result, nullptr, 16);
+    int address;
+    stringstream ss;
+    ss << hex << result;
+    ss >> address;
+	return address;
 }
 
 class Instruction {
