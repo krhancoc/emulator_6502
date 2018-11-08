@@ -15,10 +15,25 @@
 
 using namespace std;
 
+Value * evaluate(string line) 
+{
+}
+
 template <class F>
 Instruction * CreateInstruction(Emulator * emu, string line) 
 {
-    return new F(emu, line);
+    vector<string> arguments;
+    string token;
+    istringstream args(line); 
+    while(getline(args, token, ' ')){
+        arguments.push_back(token);
+    }
+
+    Value * v = nullptr;
+    if (arguments.size() == 2) {
+        v = evaluate(arguments[1]);
+    };
+    return new F(emu, v, line);
 }
 
 unordered_map<string, Instruction*(*)(Emulator *,string)>instruction_map = {
