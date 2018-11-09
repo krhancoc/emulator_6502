@@ -11,7 +11,6 @@
 
 #include "../include/emulator.h"
 #include "../include/instruction.h"
-#include "../include/instruction_set.h"
 
 using namespace std;
 
