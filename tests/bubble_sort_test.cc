@@ -9,8 +9,7 @@ int main()
     Emulator * emu = new Emulator();
     emu->reset();
     emu->attach("test_files/dummy_bub_sort.asm");
-    state check = emu->run();   
+    emu->run();   
     cout << emu->to_string() << endl;
-    cout << emu->quick_map[Reg::A] << endl;
     return 0;
 };

@@ -15,6 +15,5 @@ int main()
     state check = emu->run();   
     ass(check,  0xBB);
     cout << emu->to_string() << endl;
-    cout << emu->quick_map[Reg::A] << endl;
     return 0;
 };

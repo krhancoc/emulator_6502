@@ -10,6 +10,5 @@ int main()
     emu->attach("test_files/ldx_test.asm");
     emu->run();
     cout << emu->to_string() << endl;
-    cout << emu->quick_map[Reg::A] << endl;
     return 0;
 };

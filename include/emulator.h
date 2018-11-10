@@ -9,13 +9,14 @@
 #include <sstream>
 #include <cstring>
 
+#include "util.h"
+#include "types.h"
 
 #define MAX_MEMORY 65536
 #define MAX_PER_LINE 16
 
 using namespace std;
 
-enum class Reg { X, Y, A, P, S};
 typedef uint16_t address;
 typedef uint8_t word;
 
@@ -43,8 +44,8 @@ public:
 
 class Memory {
 public:
-	const address STACK_LOW_ADDR = 0x100;
-	const address STACK_HIGH_ADDR = 0x1ff;
+    const address STACK_LOW_ADDR = 0x100;
+    const address STACK_HIGH_ADDR = 0x1ff;
 
     word internal_memory[MAX_MEMORY];
     Memory() {
@@ -99,22 +100,17 @@ class Emulator {
     word a = 0; 
     word x = 0; 
     word y = 0;
-    // only keep the bit 5 always be 1 (bit order 7->0)
     word p = 0x20;
-    // start point of the stack 
     word s = 0xff;
 public:
     // to get flag bit, do AND for corrsponding p_bit and P, and test if larger than 0(true)
     // to set flag bit, do OR or (P & ~p_bit[])
-    const word p_bit[8] = {
-	    0x1, 0x2, 0x4, 0x8, 0x10, 0x20, 0x40, 0x80
-    };
 
     Memory * mem = new Memory();
     Clock * clock = new Clock(1);
-    unordered_map<Reg, word *> quick_map {
+    unordered_map<Reg, word *> register_map {
         {Reg::X, &x}, {Reg::A, &a}, {Reg::Y, &y}, 
-		{Reg::P, &p}, {Reg::S, &s}
+	{Reg::P, &p}, {Reg::S, &s}
     };
 
     void increment_pc(uint16_t val)
@@ -186,5 +182,6 @@ public:
     };
 
 };
+
 #endif
 

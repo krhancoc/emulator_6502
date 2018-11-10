@@ -10,13 +10,86 @@
 #include <vector>
 
 #include "../include/emulator.h"
-#include "../include/instruction.h"
+#include "../include/instruction_set.h"
 
 using namespace std;
 
-Value * evaluate(string line) 
+bool check_register(string val) 
 {
+    return !val.compare("X") || !val.compare("A") || !val.compare("Y");
 }
+
+Reg get_register(string val)
+{
+    switch (val[0]) {
+        case 'X':
+            return Reg::X;
+        case 'Y':
+            return Reg::Y;
+        case 'A':
+            return Reg::A;
+        case 'S':
+            return Reg::S;
+    }
+    throw "HELLO";
+};
+
+Value * evaluate(string value, Emulator * emu) 
+{
+    Value * v;
+    vector<string> arguments;
+    string token;
+    istringstream args(value); 
+    while(getline(args, token, ',')){
+        arguments.push_back(token);
+    }
+    
+    switch (arguments.size()) {
+        case 0: 
+        {
+            v = nullptr;
+            break;
+        }
+        case 1: 
+        {
+            string val = arguments[0];
+            if (check_register(val)) {
+                return new Register(get_register(val), emu);
+            }
+
+            if (val[0] == '(' && val[val.length() - 1] == ')') {
+                v = evaluate(val.substr(1, val.length() - 1), emu);
+                if (v->mode == Mode::ZERO_PAGE_INDEXED) {
+                    v->mode = Mode::INDEXED_INDIRECT;
+                    Mem * m = (Mem *)v;
+                    if (m->offset != Reg::X) 
+                        throw "Index indirect address mode only for X register";
+
+                } else {
+                    v->mode = Mode::INDIRECT;
+                }
+                return v;
+            } else if (!val.substr(0, 2).compare("#$")) {
+                return new Constant(val.substr(2, val.length()));
+            } else if (val[0] == '#') {
+                return new Mem(val.substr(1, val.length()), emu);
+            } else {
+                return new Lab(val.substr(0, val.length()));
+            }
+            return nullptr;
+        }
+        case 2:
+        {
+            v = evaluate(arguments[0], emu);
+            v->indexed();
+            Mem * m = (Mem *) v;
+            if (m->offset != Reg::Y) 
+                throw "Indirect Index address mode only for Y register";
+            return v;
+        }
+    } 
+    return v;
+};
 
 template <class F>
 Instruction * CreateInstruction(Emulator * emu, string line) 
@@ -30,17 +103,39 @@ Instruction * CreateInstruction(Emulator * emu, string line)
 
     Value * v = nullptr;
     if (arguments.size() == 2) {
-        v = evaluate(arguments[1]);
+        v = evaluate(arguments[1], emu);
     };
-    return new F(emu, v, line);
+    return new F(v, emu, line);
 }
 
 unordered_map<string, Instruction*(*)(Emulator *,string)>instruction_map = {
-    {"INX", CreateInstruction<CLI>}
+    // Arithmetic.h
+    {"INX", CreateInstruction<Increment>},
+    {"INY", CreateInstruction<Increment>},
+    {"INC", CreateInstruction<Increment>},
+    {"TXA", CreateInstruction<TXA>},
+    {"TAX", CreateInstruction<TAX>},
+    {"TAY", CreateInstruction<TAY>},
+    {"TSX", CreateInstruction<TSX>},
+    {"TXS", CreateInstruction<TXS>},
+    {"TYA", CreateInstruction<TYA>},
+    // Branch.h
+    {"JMP", CreateInstruction<JMP>},
 };
 
 Instruction * parse(string line, Emulator * emu)
 {
+    vector<string> arguments;
+    string token;
+    istringstream args(line); 
+    while(getline(args, token, ' ')){
+        arguments.push_back(token);
+    }
+    string val = arguments[0];
+    if (val[val.length() - 1] == ':') {
+        return new Label(val.substr(0, val.length() -1), line);
+    } 
+    return instruction_map[arguments[0]](emu, line);
 }
 
 
@@ -88,8 +183,8 @@ void Emulator::attach(string filename)
         throw invalid_argument("File not found"); 
     }
     in.close();
-	
-	for (size_t i = 0; i < instructions.size(); i++) {
+
+    for (size_t i = 0; i < instructions.size(); i++) {
         vector<string> code_window;
         Instruction * inst = instructions[i];
         size_t start = int (i - 2) > 0  ? i - 2: 0;

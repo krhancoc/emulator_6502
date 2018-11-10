@@ -4,11 +4,13 @@
 #include <regex>
 #include <unordered_map>
 #include <unordered_set>
-
-#include "emulator.h"
 #include <math.h>
 
+#include "emulator.h"
+
+using namespace std; 
 typedef uint8_t word;
+class Emulator;
 
 class Instruction {
 protected:
@@ -23,11 +25,7 @@ public:
     }
     virtual ~Instruction() = default;
     virtual void run()=0;
-    int execute() {
-        run();
-        emu->increment_pc(byte_length);
-        return current_cycle;
-    };
+    int execute();
     int get_cycle() 
     {
         return current_cycle;
@@ -49,17 +47,49 @@ public:
 
 class Value {
 public:
+    Mode mode;
     virtual word get_value()=0;
+    virtual void set_value(word)=0;
+    void indexed() 
+    {
+        switch (mode) {
+            case Mode::ABSOLUTE:
+                mode = Mode::ABSOLUTE_INDEXED; 
+            case Mode::ZERO_PAGE:
+                mode = Mode::ZERO_PAGE_INDEXED;
+            case Mode::INDIRECT:
+                mode = Mode::INDIRECT_INDEXED;
+            default:
+                throw "Problem in parsing";
+        } 
+    }
+};
+
+class Mem: public Value {
+    word address;
+    Emulator * emu;
+public:
+    Reg offset = Reg::Null;
+
+    Mem(string hex_string, Emulator * emu);
+
+    word get_value();
+    void set_value(word n);
 };
 
 class Constant : public Value {
     word data;
 public:
-    Constant(word data) : data(data) {};
+    Constant(string hex_string);
+    Constant(word data) : data(data) 
+    {
+        mode = Mode::IMMEDIATE;
+    };
     word get_value() 
     {
         return data;
     };
+    void set_value(word) {};
 };
 
 class Register : public Value {
@@ -67,9 +97,21 @@ private:
     Reg target;
     Emulator * emu;
 public:
-    Register(Reg target, Emulator *e) : target(target), emu(e) {};
-    word get_value() { return *emu->quick_map[target]; }
+    Register(Reg target, Emulator *e) : target(target), emu(e) {
+        mode = Mode::REGISTER;
+    };
+    word get_value();
+    void set_value(word data);
 };
+
+class Lab : public Value {
+public:
+    string label;
+    Lab(string value) : label(value) {};
+    word get_value() { return 0; };
+    void set_value(word) {};
+};
+
 
 
 class Label : public Instruction {
@@ -84,36 +126,6 @@ public:
     void run(){};
 };
 
-class T: public Instruction {
-private:
-    Reg source;
-    Reg target;
-public:
-    T(Reg target, Reg source, Emulator * e, string l) : source(source), target(target) 
-    {
-        line = l;
-        emu = e;
-        byte_length = 2;
-    };
-    void run()
-    {
-        *emu->quick_map[target] = *emu->quick_map[source];
-    }
-};
 
 
-class JMP: public Instruction {
-private:
-    string label;
-public:
-    JMP(string label, Emulator * e, string l) : label(label) {
-        line = l;
-        emu = e;
-        byte_length = 2;
-    };
-    void run()
-    {
-        emu->jump_to(label);
-    }
-};
 #endif
