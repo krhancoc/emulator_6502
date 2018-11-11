@@ -3,7 +3,8 @@
 
 #include "branch.h"
 #include "memory.h"
-#include "arithmetic.h"
+#include "increment.h"
+#include "transfer.h"
 
 #endif
 
