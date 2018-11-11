@@ -10,22 +10,34 @@ int Instruction::execute()
 
 Mem::Mem(string hex_string, Emulator * emu) : emu(emu)
 {
-    address = string_to_word(hex_string);
+    switch (hex_string.length()) {
+        case 2:
+            mode = Mode::ZERO_PAGE;
+            break;
+        case 4:
+            mode = Mode::ABSOLUTE;
+            break;
+        default:
+            throw "BAD MEMORY LOCATION";
+    }
+    address = string_to_int(hex_string);
 };
 
 word Mem::get_value()
 {
-    return emu->mem->read(address);
+    word o = offset != nullptr ? offset->get_value() : 0;
+    return emu->mem->read(address + o);
 }
 void Mem::set_value(word n)
 {
-    emu->mem->write(address, n);
+    word o = offset != nullptr ? offset->get_value() : 0;
+    emu->mem->write(address + o, n);
 }
 
 Constant::Constant(string hex_string) 
 {
     mode = Mode::IMMEDIATE;
-    data = string_to_word(hex_string);
+    data = string_to_int(hex_string);
 };
 word Register::get_value() 
 { 

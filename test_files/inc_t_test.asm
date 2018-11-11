@@ -1,0 +1,12 @@
+JMP end
+INX
+INY
+end:
+INX
+INX
+TXA
+TAY
+INC #00
+INC #00,X
+INC #0100
+INC #0100,X

@@ -10,7 +10,11 @@
 
 using namespace std; 
 typedef uint8_t word;
-class Emulator;
+
+struct BCPair {
+    int bytes;
+    int cycle;
+};
 
 class Instruction {
 protected:
@@ -21,8 +25,7 @@ protected:
     vector<string> code_window;
 public:
     Instruction() {}
-    Instruction(Emulator *e, string l): emu(e), line(l) {
-    }
+    Instruction(Emulator *e, string l): emu(e), line(l) { }
     virtual ~Instruction() = default;
     virtual void run()=0;
     int execute();
@@ -34,43 +37,78 @@ public:
     {
         return line;
     }
-    uint16_t get_byte_length() {
+    uint16_t get_byte_length() 
+    {
         return byte_length;
     }
-    vector<string> get_window() {
+    vector<string> get_window() 
+    {
         return code_window;
     }
-    void set_window(vector<string> w) {
+    void set_window(vector<string> w) 
+    {
         code_window = w;
+    }
+    void set_flags(word prev, word next)
+    {
+        // Check Z flag - If value is zero
+        if (next) {
+            emu->clr_flag(Flag::Z);
+        } else {
+            emu->set_flag(Flag::Z);
+        }
+        
+        // Check N flag - if value is Negative
+        if ((1 << 7) & next) {
+                emu->set_flag(Flag::N);
+        } else {
+                emu->clr_flag(Flag::N);
+        }
     }
 };
 
 class Value {
 public:
+    Value * offset = nullptr;
     Mode mode;
     virtual word get_value()=0;
     virtual void set_value(word)=0;
-    void indexed() 
+    void indexed(Value * o) 
     {
         switch (mode) {
             case Mode::ABSOLUTE:
                 mode = Mode::ABSOLUTE_INDEXED; 
+                break;
             case Mode::ZERO_PAGE:
                 mode = Mode::ZERO_PAGE_INDEXED;
+                break;
             case Mode::INDIRECT:
                 mode = Mode::INDIRECT_INDEXED;
+                break;
             default:
                 throw "Problem in parsing";
         } 
+        offset = o;
     }
 };
 
-class Mem: public Value {
-    word address;
+class Register : public Value {
+private:
+    Reg target;
     Emulator * emu;
 public:
-    Reg offset = Reg::Null;
+    Register(Reg target, Emulator *e) : target(target), emu(e) {
+        mode = Mode::REGISTER;
+    };
+    word get_value();
+    void set_value(word data);
+};
 
+
+class Mem: public Value {
+    address address;
+    Emulator * emu;
+public:
     Mem(string hex_string, Emulator * emu);
 
     word get_value();
@@ -92,17 +130,6 @@ public:
     void set_value(word) {};
 };
 
-class Register : public Value {
-private:
-    Reg target;
-    Emulator * emu;
-public:
-    Register(Reg target, Emulator *e) : target(target), emu(e) {
-        mode = Mode::REGISTER;
-    };
-    word get_value();
-    void set_value(word data);
-};
 
 class Lab : public Value {
 public:

@@ -8,10 +8,9 @@ private:
     Lab * v;
 public:
 
-    JMP(Value * v, Emulator * e, string l) : v((Lab *)v) {
-        line = l;
-        emu = e;
+    JMP(Value * v, Emulator * e, string l) : Instruction(e, l), v((Lab *)v) {
         byte_length = 2;
+        current_cycle = 3;
     };
     void run()
     {

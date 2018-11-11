@@ -4,7 +4,7 @@
 #include <sstream>
 
 using namespace std;
-inline static int string_to_word(string val) 
+inline static int string_to_int(string val) 
 {
         int x;
         stringstream ss;

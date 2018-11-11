@@ -61,10 +61,6 @@ Value * evaluate(string value, Emulator * emu)
                 v = evaluate(val.substr(1, val.length() - 1), emu);
                 if (v->mode == Mode::ZERO_PAGE_INDEXED) {
                     v->mode = Mode::INDEXED_INDIRECT;
-                    Mem * m = (Mem *)v;
-                    if (m->offset != Reg::X) 
-                        throw "Index indirect address mode only for X register";
-
                 } else {
                     v->mode = Mode::INDIRECT;
                 }
@@ -81,10 +77,8 @@ Value * evaluate(string value, Emulator * emu)
         case 2:
         {
             v = evaluate(arguments[0], emu);
-            v->indexed();
-            Mem * m = (Mem *) v;
-            if (m->offset != Reg::Y) 
-                throw "Indirect Index address mode only for Y register";
+            Value * o = evaluate(arguments[1], emu);
+            v->indexed(o);
             return v;
         }
     } 

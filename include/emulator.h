@@ -20,7 +20,6 @@ using namespace std;
 typedef uint16_t address;
 typedef uint8_t word;
 
-
 //FORWARD DEC
 class Instruction;
 
@@ -29,12 +28,13 @@ private:
     int speed;
 public:
     Clock(int speed) : speed(speed) {};
+    size_t ticks = 0;
     void tick()
     {
         clock_t t = clock();
         while(true) {
             if((clock() - t) >= speed) {
-                cout << "TICK" << endl;
+                ticks++;
                 break;
             }
         } 
@@ -82,6 +82,13 @@ public:
     };
 };
 
+enum class Flag {
+    C = 0, Z = 1, I = 2, D = 3,
+    V = 6, N = 7
+};
+
+
+
 struct state {
     address pc;
     word a;
@@ -90,6 +97,8 @@ struct state {
     word p;
     word s;
     word *internal_memory;
+
+    size_t clock_ticks;
 };
 
 class Emulator { 
@@ -103,9 +112,6 @@ class Emulator {
     word p = 0x20;
     word s = 0xff;
 public:
-    // to get flag bit, do AND for corrsponding p_bit and P, and test if larger than 0(true)
-    // to set flag bit, do OR or (P & ~p_bit[])
-
     Memory * mem = new Memory();
     Clock * clock = new Clock(1);
     unordered_map<Reg, word *> register_map {
@@ -127,7 +133,7 @@ public:
     word get_x() { return x; }
     word get_y() { return y; }
     word get_p() { return p; }
-	word get_s() { return s; }
+    word get_s() { return s; }
 
     state run()
     {
@@ -140,11 +146,20 @@ public:
             .a = a,
             .x = x,
             .y = y,
-			.p = p,
-			.s = s,
-            .internal_memory = mem->internal_memory
+            .p = p,
+            .s = s,
+            .internal_memory = mem->internal_memory,
+            .clock_ticks = clock->ticks
         };
     };
+
+    void set_flag(Flag x) {
+        p |= (1 << (int)x);
+    };
+
+    void clr_flag(Flag x) {
+        p &= ~(1 << (int)x);
+    }
 
     int step();
     void attach(string filename);
@@ -160,6 +175,7 @@ public:
         ss << "Y : " << static_cast<unsigned>((unsigned char) y) << endl;
 		ss << "S : " << static_cast<unsigned>((unsigned char) s) << endl;
         ss << endl;
+        ss << "Clock ticks: " << clock->ticks << endl;
         ss << "Flags" << endl;
         int p = this->p;
         ss << "C: " << static_cast<unsigned>((unsigned char) (p & 1)) << ", ";
