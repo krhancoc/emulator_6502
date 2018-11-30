@@ -175,10 +175,37 @@ void Translator::mount(string filename)
     };
 
 }
-
-void Translator::do_chunk()
+bool check_jmp(Instruction * i) 
 {
-   
-
+    JMP * p = dynamic_cast<JMP *>(i);
+    if (p != nullptr) {
+        return true;
+    }
+    return false;
 }
+
+int Translator::do_chunk(int current_index)
+{
+    vector<Instruction *> chunk;
+    for (size_t i = current_index; i < program.size(); i++) {
+        Instruction * inst = program[i];
+        if (check_jmp(inst)) {
+            chunk.push_back(inst);
+            break;
+        }
+        chunk.push_back(inst);
+    }
+
+    TC[current_index] = Translator::TranslationEntry(chunk);
+
+    current_index += translate(&TC[current_index]);
+    return current_index;
+}
+
+size_t Translator::translate(TranslationEntry * e) 
+{
+         
+    return e->inst.size();
+}
+
 

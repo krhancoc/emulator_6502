@@ -10,6 +10,7 @@
 
 using namespace std; 
 typedef uint8_t word;
+typedef uint64_t x86op;
 
 struct BCPair {
     int bytes;
@@ -28,6 +29,7 @@ public:
     Instruction(Emulator *e, string l): emu(e), line(l) { }
     virtual ~Instruction() = default;
     virtual void run()=0;
+    virtual x86op translate()=0;
     int execute();
     int get_cycle() 
     {

@@ -75,6 +75,11 @@ public:
         v->set_value(val + 1);
         set_flags(val, val + 1);
     }
+
+    x86op translate()
+    {
+
+    }
     
 };
 

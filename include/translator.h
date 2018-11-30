@@ -10,16 +10,24 @@
 
 class Translator {
 public:
-    Translator() {};
-    void mount(std::string filename);
-    void do_chunk();
-private:
-    vector<Instruction *> program;
-
     struct TranslationEntry {
-        vector<Instruction *> inst;
-        void * jump_point;
+        void * jump_point = nullptr;
+        x86op * opcodes;
+        TranslationEntry(vector<Instruction *> instructions) {
+            opcodes = new x86op[instructions.size()];
+            for(size_t t = 0 ; t < instructions.size(); t++) {
+               opcodes[t] = instructions[t]->translate();
+            }
+        };
     };
     typedef std::unordered_map<int, TranslationEntry> TranslationCache;
+
+    Translator() {};
+    void mount(std::string filename);
+    int do_chunk(int current_position);
+    size_t translate(TranslationEntry * e);
+private:
+    vector<Instruction *> program;
+    TranslationCache TC;
 };
 #endif
