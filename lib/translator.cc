@@ -3,14 +3,12 @@
 #include "../include/translator.h"
 #include "../include/instruction_set.h"
 
-using namespace std;
-
-bool check_register(string val) 
+bool check_register_t(string val) 
 {
     return !val.compare("X") || !val.compare("A") || !val.compare("Y");
 }
 
-Reg get_register(string val)
+Reg get_register_t(string val)
 {
     switch (val[0]) {
         case 'X':
@@ -25,7 +23,7 @@ Reg get_register(string val)
     throw "HELLO";
 };
 
-Value * evaluate(string value, Emulator * emu) 
+Value * evaluate_t(string value, Emulator * emu) 
 {
     Value * v;
     vector<string> arguments;
@@ -44,12 +42,12 @@ Value * evaluate(string value, Emulator * emu)
         case 1: 
         {
             string val = arguments[0];
-            if (check_register(val)) {
-                return new Register(get_register(val), emu);
+            if (check_register_t(val)) {
+                return new Register(get_register_t(val), emu);
             }
 
             if (val[0] == '(' && val[val.length() - 1] == ')') {
-                v = evaluate(val.substr(1, val.length() - 1), emu);
+                v = evaluate_t(val.substr(1, val.length() - 1), emu);
                 if (v->mode == Mode::ZERO_PAGE_INDEXED) {
                     v->mode = Mode::INDEXED_INDIRECT;
                 } else {
@@ -67,8 +65,8 @@ Value * evaluate(string value, Emulator * emu)
         }
         case 2:
         {
-            v = evaluate(arguments[0], emu);
-            Value * o = evaluate(arguments[1], emu);
+            v = evaluate_t(arguments[0], emu);
+            Value * o = evaluate_t(arguments[1], emu);
             v->indexed(o);
             return v;
         }
@@ -89,7 +87,7 @@ Instruction * CreateInstruction(string line)
 
     Value * v = nullptr;
     if (arguments.size() == 2) {
-        v = evaluate(arguments[1], nullptr);
+        v = evaluate_t(arguments[1], nullptr);
     };
     return new F(v, nullptr, line);
 }
@@ -196,16 +194,15 @@ int Translator::do_chunk(int current_index)
         chunk.push_back(inst);
     }
 
-    TC[current_index] = Translator::TranslationEntry(chunk);
+    TranslationEntry e = Translator::TranslationEntry(chunk);
 
-    current_index += translate(&TC[current_index]);
     return current_index;
 }
 
 size_t Translator::translate(TranslationEntry * e) 
 {
          
-    return e->inst.size();
+    return 0; 
 }
 
 

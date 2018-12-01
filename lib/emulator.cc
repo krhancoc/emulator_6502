@@ -102,7 +102,7 @@ Instruction * CreateInstruction(Emulator * emu, string line)
     return new F(v, emu, line);
 }
 
-unordered_map<string, Instruction*(*)(Emulator *,string)>instruction_map = {
+unordered_map<string, Instruction*(*)(Emulator *,string)>instruction_map_emu = {
     // Arithmetic.h
     {"INX", CreateInstruction<Increment>},
     {"INY", CreateInstruction<Increment>},
@@ -129,7 +129,7 @@ Instruction * parse(string line, Emulator * emu)
     if (val[val.length() - 1] == ':') {
         return new Label(val.substr(0, val.length() -1), line);
     } 
-    return instruction_map[arguments[0]](emu, line);
+    return instruction_map_emu[arguments[0]](emu, line);
 }
 
 

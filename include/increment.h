@@ -76,9 +76,14 @@ public:
         set_flags(val, val + 1);
     }
 
-    x86op translate()
+    TranslationSnippet translate()
     {
-
+        int x = 24;
+        void * val = static_cast<void *>(&x);
+        return TranslationSnippet {
+            .translation = val,
+            .bytes = sizeof(x)
+        };
     }
     
 };

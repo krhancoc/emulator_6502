@@ -3,7 +3,8 @@ Import('env')
 src = [
     "emulator.cc",
     "terminal.cc",
-    "instruction.cc"
+    "instruction.cc",
+    "translator.cc",
 ]
 
 env.StaticLibrary("emulator", src)

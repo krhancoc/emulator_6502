@@ -16,6 +16,10 @@ public:
     {
         emu->jump_to(v->label);
     }
+    TranslationSnippet translate() 
+    {
+        return TranslationSnippet();
+    }
 
 };
 

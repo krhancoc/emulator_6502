@@ -17,6 +17,11 @@ struct BCPair {
     int cycle;
 };
 
+struct TranslationSnippet {
+    void * translation;
+    size_t bytes;
+};
+
 class Instruction {
 protected:
     Emulator * emu;
@@ -29,7 +34,7 @@ public:
     Instruction(Emulator *e, string l): emu(e), line(l) { }
     virtual ~Instruction() = default;
     virtual void run()=0;
-    virtual x86op translate()=0;
+    virtual TranslationSnippet translate()=0;
     int execute();
     int get_cycle() 
     {
@@ -153,6 +158,11 @@ public:
         line = l;
     };
     void run(){};
+    TranslationSnippet translate() 
+    {
+        return TranslationSnippet();
+    }
+
 };
 
 

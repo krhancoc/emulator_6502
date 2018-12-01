@@ -13,6 +13,11 @@ public:
     void run()
     {
     }
+    TranslationSnippet translate() 
+    {
+        return TranslationSnippet();
+    }
+
 };
 
 template<Reg target>
@@ -26,7 +31,11 @@ public:
     void run() 
     {
     }
-    
+    TranslationSnippet translate() 
+    {
+        return TranslationSnippet();
+    }
+   
 };
 
 

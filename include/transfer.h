@@ -78,6 +78,11 @@ public:
         *emu->register_map[target] = *emu->register_map[source];
         set_flags(prev, next);
     }
+    TranslationSnippet translate() 
+    {
+        return TranslationSnippet();
+    }
+
 };
 
 typedef Transfer<Reg::A, Reg::X> TAX;
