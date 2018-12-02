@@ -20,18 +20,18 @@ Mem::Mem(string hex_string, Emulator * emu) : emu(emu)
         default:
             throw "BAD MEMORY LOCATION";
     }
-    address = string_to_int(hex_string);
+    addr = string_to_int(hex_string);
 };
 
 word Mem::get_value()
 {
     word o = offset != nullptr ? offset->get_value() : 0;
-    return emu->mem->read(address + o);
+    return emu->mem->read(addr + o);
 }
 void Mem::set_value(word n)
 {
     word o = offset != nullptr ? offset->get_value() : 0;
-    emu->mem->write(address + o, n);
+    emu->mem->write(addr + o, n);
 }
 
 Constant::Constant(string hex_string) 

@@ -18,8 +18,17 @@ struct BCPair {
 };
 
 struct TranslationSnippet {
-    void * translation;
+    char *translation;
     size_t bytes;
+
+    TranslationSnippet(void *val, size_t size) : bytes(size) {
+	    translation = new char[size];
+	    memcpy(translation, val, size);
+    }
+
+    ~TranslationSnippet() {
+	delete translation;
+    }
 };
 
 class Instruction {
@@ -101,9 +110,9 @@ public:
 
 class Register : public Value {
 private:
-    Reg target;
     Emulator * emu;
 public:
+    Reg target;
     Register(Reg target, Emulator *e) : target(target), emu(e) {
         mode = Mode::REGISTER;
     };
@@ -113,7 +122,7 @@ public:
 
 
 class Mem: public Value {
-    address address;
+    address addr;
     Emulator * emu;
 public:
     Mem(string hex_string, Emulator * emu);
@@ -160,7 +169,7 @@ public:
     void run(){};
     TranslationSnippet translate() 
     {
-        return TranslationSnippet();
+        return TranslationSnippet(nullptr, 0);
     }
 
 };

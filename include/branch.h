@@ -18,7 +18,7 @@ public:
     }
     TranslationSnippet translate() 
     {
-        return TranslationSnippet();
+        return TranslationSnippet(nullptr, 0);
     }
 
 };

@@ -195,14 +195,39 @@ int Translator::do_chunk(int current_index)
     }
 
     TranslationEntry e = Translator::TranslationEntry(chunk);
+    for (int i = 0; i < 15; i++)
+	    printf("%x ",((uint8_t *) e.code_section)[i]);
+    printf("\n");
 
+	asm volatile (
+		"pushq %%rax\n"
+		"pushq %%rbx\n"
+		"pushq %%rcx\n"
+		"pushq %%rdx\n"
+		"xor %%rax, %%rax\n"
+		"xor %%rbx, %%rbx\n"
+		"xor %%rcx, %%rcx\n"
+		"xor %%rdx, %%rdx\n"
+		"mov %[A], %%al\n"
+		"mov %[X], %%bl\n"
+		"mov %[Y], %%cl\n"
+		"callq *%[code]\n"
+
+		"mov %%al, %[A]\n"
+		"mov %%bl, %[X]\n"
+		"mov %%cl, %[Y]\n"
+		"popq %%rdx\n"
+		"popq %%rcx\n"
+		"popq %%rbx\n"
+		"popq %%rax\n"
+		: [A] "+m" (A) , [X] "+m" (X), [Y] "+m" (Y)
+		: [code] "m" (e.code_section)
+	);
+
+	cout << "X IS " << (int) X << endl;
+	cout << "Y IS " << (int) Y << endl;
     return current_index;
 }
 
-size_t Translator::translate(TranslationEntry * e) 
-{
-         
-    return 0; 
-}
 
 
