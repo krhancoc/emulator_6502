@@ -20,7 +20,7 @@ struct BCPair {
 struct TranslationSnippet {
     char *translation;
     size_t bytes;
-
+    TranslationSnippet() {};
     TranslationSnippet(void *val, size_t size) : bytes(size) {
 	    translation = new char[size];
 	    memcpy(translation, val, size);

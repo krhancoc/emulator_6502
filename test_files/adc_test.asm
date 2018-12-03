@@ -1,5 +1,24 @@
-INX 
+start:
+INX
+INX
+INX
+INX
+JMP end
 INY 
-INX 
 INY 
-INX 
+INY
+end:
+INX
+INX
+INX
+INX
+INX
+JMP dingdong
+INY
+dingdong:
+INX
+INX
+INX
+INX
+INX
+JMP start

@@ -79,37 +79,35 @@ public:
     TranslationSnippet translate()
     {
         uint8_t binary[9] = { 0xFE, 0, 0, 0, 0, 0, 0, 0, 0};
-	size_t size;
+    size_t size;
 
-	if (v->mode == Mode::REGISTER) {
-		/* Opcode for 8-bit data */
-		size = 2;
-		Register *reg = dynamic_cast<Register *> (v);
-		/* 
-		 * This holds for _all_ 
-		 * instructions that take a x86 reg 
-		 */
-		switch(reg->target) {
-			/* Not applicable here, just for reference */
-			case Reg::A:
-				binary[1] = 0xC0;
-				break;
-			case Reg::X:
-				binary[1] = 0xC3;
-				break;
-			case Reg::Y:
-				binary[1] = 0xC1;
-				break;
-			default:
-				throw "Bad Register";
-		}
-	} else if (v->mode == Mode::ABSOLUTE) {
-		/* Else we construct a memory instruction */
-		/* TODO */
+    if (v->mode == Mode::REGISTER) {
+        /* Opcode for 8-bit data */
+        size = 2;
+        Register *reg = dynamic_cast<Register *> (v);
+        /* 
+         * This holds for _all_ 
+         * instructions that take a x86 reg 
+         */
+        switch(reg->target) {
+            /* Not applicable here, just for reference */
+            case Reg::A:
+                binary[1] = 0xC2;
+                break;
+            case Reg::X:
+                binary[1] = 0xC3;
+                break;
+            case Reg::Y:
+                binary[1] = 0xC1;
+                break;
+            default:
+                throw "Bad Register";
+        }
+    } else if (v->mode == Mode::ABSOLUTE) {
+        /* Else we construct a memory instruction */
+        /* TODO */
 
-	}
-
-
+    }
         void * val = static_cast<void *>(&binary);
         return TranslationSnippet(val,size);
     }

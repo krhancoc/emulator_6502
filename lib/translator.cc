@@ -107,6 +107,9 @@ unordered_map<string, Instruction*(*)(string)>instruction_map = {
     {"TYA", CreateInstruction<TYA>},
     // Branch.h
     {"JMP", CreateInstruction<JMP>},
+    {"BNE", CreateInstruction<BNE>},
+    // compare.h
+    {"CMP", CreateInstruction<Compare>},
 };
 
 Instruction * parse(string line)
@@ -126,17 +129,16 @@ Instruction * parse(string line)
 
 void Translator::mount(string filename) 
 {
-    unordered_map<string, address> labels;
     string line;
     ifstream in;
 
     in.open(filename);    
     vector<Instruction *> instructions;
-	if (!in) {
-		perror(string("Cannot open input file: " + filename).c_str());
-	}
-	
-	if (in.is_open()) {
+    if (!in) {
+        perror(string("Cannot open input file: " + filename).c_str());
+    }
+    
+    if (in.is_open()) {
         while(getline(in, line)) {
             if (line.length() != 0 && line[0] != ';') {
                 try {
@@ -166,67 +168,138 @@ void Translator::mount(string filename)
         inst->set_window(code_window);
         Label * p = dynamic_cast<Label *>(inst);
         if (p != nullptr) {
-            labels[p->label] = program.size();        
+            labels[p->label] = program.size() + 1;        
+            program.push_back(inst);
         } else {
             program.push_back(inst);
         }
     };
 
 }
-bool check_jmp(Instruction * i) 
+string check_jmp(Instruction * i) 
 {
     JMP * p = dynamic_cast<JMP *>(i);
     if (p != nullptr) {
-        return true;
+        return p->v->label;
     }
-    return false;
+    return "";
 }
 
-int Translator::do_chunk(int current_index)
+string check_bne(Instruction * i) 
 {
-    vector<Instruction *> chunk;
-    for (size_t i = current_index; i < program.size(); i++) {
-        Instruction * inst = program[i];
-        if (check_jmp(inst)) {
-            chunk.push_back(inst);
-            break;
-        }
-        chunk.push_back(inst);
+    BNE * p = dynamic_cast<BNE *>(i);
+    if (p != nullptr) {
+        return p->v->label;
     }
+    return "";
+}
 
-    TranslationEntry e = Translator::TranslationEntry(chunk);
-    for (int i = 0; i < 15; i++)
-	    printf("%x ",((uint8_t *) e.code_section)[i]);
+string check_label(Instruction * i) 
+{
+    Label * p = dynamic_cast<Label *>(i);
+    if (p != nullptr) {
+        return p->label;
+    }
+    return "";
+}
+
+
+void Translator::start()
+{
+    string dingdong = "start";
+    Translator::TranslationEntry * prev = nullptr;
+    while (dingdong != "") {
+        prev = do_chunk(dingdong, prev);
+        dingdong = prev->go_to;
+        int x;
+        cin >> x;
+    }
+}
+
+Translator::TranslationEntry * Translator::do_chunk(string label, TranslationEntry * prev)
+{
+    register uint64_t code asm("r9");
+
+    TranslationEntry * e;
+    Instruction * last_i = nullptr;
+    bool appended = false;
+    if(TC.find(label) == TC.end()) {
+        vector<Instruction *> chunk;
+
+        string go_func;
+        for (size_t i = labels[label]; i < program.size(); i++) {
+            Instruction * inst = program[i];
+            go_func = check_label(inst);
+            if (go_func != "") {
+                last_i = inst;
+                break;
+            }
+            go_func = check_jmp(inst);
+            if (go_func != "") {
+                last_i = inst;
+                break;
+            }
+
+            if (check_bne(inst) != "") {
+                appended = true; 
+            }
+
+            chunk.push_back(inst);
+        }
+        e = new Translator::TranslationEntry(chunk, go_func, this);
+        e->last_inst = last_i;
+        e->appended = appended;
+        TC[label] = e;
+    } else {
+        e = TC[label];
+    }
+    
+    if (prev != nullptr && !prev->appended)
+    {
+        TranslationSnippet * f = JMP::gen_jump(prev->code_section);
+        e->reappend(f->translation, f->bytes);
+        prev->appended = true;
+        cout << "APPENDED" << endl;
+    }
+    cout << "A IS " << (int) A << endl;
+    cout << "X IS " << (int) X << endl;
+    cout << "Y IS " << (int) Y << endl;
+
+    for (int i = 0; i < 30; i++)
+        printf("%x ",((uint8_t *) e->code_section)[i]);
     printf("\n");
 
-	asm volatile (
-		"pushq %%rax\n"
-		"pushq %%rbx\n"
-		"pushq %%rcx\n"
-		"pushq %%rdx\n"
-		"xor %%rax, %%rax\n"
-		"xor %%rbx, %%rbx\n"
-		"xor %%rcx, %%rcx\n"
-		"xor %%rdx, %%rdx\n"
-		"mov %[A], %%al\n"
-		"mov %[X], %%bl\n"
-		"mov %[Y], %%cl\n"
-		"callq *%[code]\n"
-
-		"mov %%al, %[A]\n"
-		"mov %%bl, %[X]\n"
-		"mov %%cl, %[Y]\n"
-		"popq %%rdx\n"
-		"popq %%rcx\n"
-		"popq %%rbx\n"
-		"popq %%rax\n"
-		: [A] "+m" (A) , [X] "+m" (X), [Y] "+m" (Y)
-		: [code] "m" (e.code_section)
-	);
-
-	cout << "X IS " << (int) X << endl;
-	cout << "Y IS " << (int) Y << endl;
-    return current_index;
+    code = (uint64_t) e->code_section;
+    asm volatile (
+        "pushq %%rax\n"
+        "pushq %%rbx\n"
+        "pushq %%rcx\n"
+        "pushq %%rdx\n"
+        "pushq %%r10\n"
+        "xor %%rax, %%rax\n"
+        "xor %%rbx, %%rbx\n"
+        "xor %%rcx, %%rcx\n"
+        "xor %%rdx, %%rdx\n"
+        "xor %%r10, %%r10\n"
+        "mov %[X], %%bl\n"
+        "mov %[Y], %%cl\n"
+        "mov %[A], %%dl\n"
+        "callq *%[code]\n"
+        "mov %%bl, %[X]\n"
+        "mov %%cl, %[Y]\n"
+        "mov %%dl, %[A]\n"
+        "popq %%r10\n"
+        "popq %%rdx\n"
+        "popq %%rcx\n"
+        "popq %%rbx\n"
+        "popq %%rax\n"
+        : [A] "+m" (A) , [X] "+m" (X), [Y] "+m" (Y) 
+        : [code] "r" (code)
+    );
+ 
+    cout << "X IS " << (int) X << endl;
+    cout << "Y IS " << (int) Y << endl;
+    return e;
 }
 
 
