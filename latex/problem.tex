@@ -1,0 +1,80 @@
+\section{Difficulties in Implementation}
+
+For the implementation of the binary translator we opted to expand on our existing emulator project, written in C++.
+The main idea was to have a translation cache in the emulator, which is queried for every basic block. 
+If an existing translated block is found, then the emulator would instead execute that instead of going through the 6502 block instruction by instruction.
+
+Creating executable code is straightforward, if somewhat awkward. First, an area of memory needs to be mmap()'ed as executable. 
+The translator then emits instructions corresponding to the 6502 code by directly writing binary code into the buffer. 
+Unfortunately, it is necessary to hardcode the opcodes in binary, since it is not possible to define code as data in C++. 
+While it would in fact be simple to do so in pure x86 assembly, the fact that we are writing in a high level language actually makes the task more difficult.
+
+x86\_64 assembly also has multiple versions of the same instruction, depending on the size and type of the operands that the opcode takes.
+While the instruction set does succeed in its goal of being backwards compatible with as many past iterations of itself as possible, one disadvantage of this design choice is that there are a lot of opcodes that are obsolete for modern programs.
+This one to many relation between instructions and opcodes means that a thorough understanding of the platform is necessary when deciding on a representation for a 6502 instruction.
+
+A good example of the peculiarities of the x86 instruction set is the JMP instruction. 
+This operation can execute either a near or a far jump, depending on the opcode used.
+The differences between these two jumps are nonexistent in 64bit mode, since the distinction originates in the way the older members of the x86 family of processors implemented segmentation.
+This method of partitioning memory has been rendered obsolete by virtual memory, however the opcodes are still there.
+
+In order to find out which version of the instruction is actually the desirable one, we used a disassembler on compiled programs and inspected the opcodes corresponding to the JMP instructions used there.
+This method turned out to be moderately useful: The disassembled code was always correct, however finding out the exact version of the instruction needed is not always guaranteed.
+Looking for a perfect match instead of just a similar version was necessary because of the `polymorphism' that x86 instructions exhibit, which for example means that some instructions have different opcodes for 32-bit and 64-bit versions.
+
+\begin{figure}[!h]
+\begin{lstlisting}
+    asm volatile (
+        "pushq %%rax\n"
+        "pushq %%rbx\n"
+        "pushq %%rcx\n"
+        "pushq %%rdx\n"
+        "pushq %%r10\n"
+        "xor %%rax, %%rax\n"
+        "xor %%rbx, %%rbx\n"
+        "xor %%rcx, %%rcx\n"
+        "xor %%rdx, %%rdx\n"
+        "xor %%r10, %%r10\n"
+        "mov %[X], %%bl\n"
+        "mov %[Y], %%cl\n"
+        "mov %[A], %%dl\n"
+        "callq *%[code]\n"
+        "mov %%bl, %[X]\n"
+        "mov %%cl, %[Y]\n"
+        "mov %%dl, %[A]\n"
+        "popq %%r10\n"
+        "popq %%rdx\n"
+        "popq %%rcx\n"
+        "popq %%rbx\n"
+        "popq %%rax\n"
+        : [A] "+m" (A) , [X] "+m" (X), [Y] "+m" (Y) 
+        : [code] "r" (code)
+    );
+\end{lstlisting}
+	\caption {The inline assembly code used when entering and exiting the translated code.}
+\end{figure}
+ 
+A major problem we encountered was the linkage of the basic blocks into a self-contained x86 binary. 
+As demonstrated in Figure \#, entering the emitted code is done by saving all registers to be used by the generated instructions.
+As an optimization, the current values of the 6502 registers are always saved in specific registers for easy access.
+Code generation is also simpler, since 6502 operations that act on the registers always get translated to x86 instructions that have a register as an operand.
+
+The issues that came up have to do with the interplay of the binary translator with the emulator.
+Normally, the emulator works at the instruction level, and does not need to be concerned with basic blocks.
+This means that the existing infrastructure could not be used in combination with the binary translator without modifications:
+Each time translated code is executed, the emulator is not capable of finding the next instruction that is supposed to be executed.
+
+Monitoring the control flow of the generated code also proved to be a problem when connecting instructions together.
+When connecting basic control blocks, the main idea is to overwrite the return function that has been attached at the end with a jump to the next block. 
+This modification is especially complex with conditional branches. 
+The basic blocks are disjoint in memory, since they have variable size and are created in a random order.
+This means that the code for a relative branch looks like the following:
+
+\begin{lstlisting}
+	if (condition)
+		jmp to taken
+not taken:	
+	jmp taken_path
+taken:		
+	jmp not_taken_path
+\end{lstlisting}

@@ -38,12 +38,22 @@ Binary translation, much like all forms of compilation, hinges on the concept
 of basic code blocks.  Basic blocks are sequences of machine instructions that
 do not contain control flow commands like jumps and branches, and are the the
 smallest unit that binary translation works with.  More concisely, we can only
-jump to the start of basic blocks.  Programs are sectioned into many basic
-blocks.  The block cannot be accessed without
+jump to the start of basic blocks. Programs are sectioned into multiple basic
+blocks, which are organized into a graph whose edges denote a possible execution
+where the destination is run immediately afterthe source. 
 
-The emulator then goes through the program, creating and then executing a
-sequence of native instructions corresponding to the current block.
+The concept of basic blocks is useful exactly because all programs enter the 
+block from the beginning and exit from the end. That means that, as long as
+the sum of its operations produce the same outputs for all possible inputs,
+it is possible to transform the instructions without losing program correctness.
+This is the fundamental principle behind compiler optimizations.
 
+An emulator that employs binary translation goes through the program, creating and 
+then executing a sequence of native instructions corresponding to the current block.
+The key insight is that program correctness is independent of the underlying
+platform, and is dependent only on creating the proper output for all inputs.
+Therefore, it is possible to create a native program that does exactly that, using 
+the original binary as a blueprint.
 
 
 
