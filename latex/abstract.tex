@@ -3,11 +3,11 @@ software components in systems that cannot run them natively.  The process
 consists of dynamically creating native machine code corresponding to the
 foreign binary.  While the concept is straightforward, there is a slew of ways
 the construction of the translator can go awry, as will be outlined in this
-paper.  We attempt to enumerate difficulties encountered while writing such an
-assembler from the 6502 to the x86-64 architecture.  Examples include
+paper.  We attempt to enumerate difficulties encountered while writing such a
+translator for the 6502 to the x86-64 architecture.  Examples include
 dynamically rewriting the emitted code to connect basic code blocks, properly
 allocating host registers to the guest code, and mixing emulation and binary
 translation.  We discuss the nature of these problems, and offer advice for
-anyone attempting to use this method.
+anyone attempting to implement this style of program.
 
 

@@ -2,10 +2,10 @@
 
 \subsection{Arguments for Binary Translation}
 
-Binary Translation is the process through which binary program which was meant for a
-specific hardware platform can be run natively in another system.  Normally, binary
+Binary Translation is the process through which a binary program meant for a
+specific architecture can be run natively on another system.  Normally, binary
 programs that cannot be run have to be interpreted instruction by instruction
-by an emulator in order to reproduce its behavior.  However, this approach is
+with an emulator in order to reproduce its behavior.  However, this approach is
 very slow, since the amount of native instructions executed for each foreign
 one can be exceedingly high.
 
@@ -26,7 +26,7 @@ Virtual Machines (VMs) are such a class of programs.  The kernel running in the
 VM is designed to have full access to the hardware, which in this case includes
 sensitive processor registers and emulated devices.  A translator has the
 responsibility of replacing code that attempts to do such accesses with
-alternative instructions that divert flow to the translator.  The program
+alternative instructions.  The program
 emulates the resource in such a way that the VM can keep executing, and diverts
 control back to it.  Popular emulators that employ binary translation, such as
 Bochs and QEMU, utilize exactly this kind of scheme in order to emulate devices
@@ -36,11 +36,12 @@ like disks on demand.
 
 Binary translation, much like all forms of compilation, hinges on the concept
 of basic code blocks.  Basic blocks are sequences of machine instructions that
-do not contain control flow commands like jumps and branches, and are the the
+do not contain control flow commands like jumps and branches, and are the
 smallest unit that binary translation works with.  More concisely, we can only
 jump to the start of basic blocks. Programs are sectioned into multiple basic
-blocks, which are organized into a graph whose edges denote a possible execution
-where the destination is run immediately afterthe source. 
+blocks, which can be organized and viewed as a graph. Where nodes are the code
+blocks themselves and directed edges represent a connection (through label or pointer)
+from one code block to the other.  Nodes may have multiple edges to multiple nodes.
 
 The concept of basic blocks is useful exactly because all programs enter the 
 block from the beginning and exit from the end. That means that, as long as

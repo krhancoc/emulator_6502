@@ -9,11 +9,11 @@
 The general overview of a binary translator goes through the following steps.
 And can be seen through Figure~\ref{fig:trans} 
 
-\subsubsection{Retrieval} The translato reads until a jump or a label is found,
+\subsubsection{Retrieval} The translator reads until a jump or a label is found,
 making note of every use of a label it encounters as it translates.  There are
-two cases in which can occur at this point, either the end label  has been
+two cases in which can occur at this point, either the label has been
 encountered or it has not.  The easy case being if it has been encountered, in
-which case we use a label cache and translate that instruction to jump to jump
+which case we use a label cache and translate that instruction to jump 
 to the code section pointed to by the cache.
 
 If it has not, then we translate it such that when the assembly is executed it
@@ -24,7 +24,9 @@ exactly the label it requires, and also that it requires it immediately. We can
 then scan the original binary for this label and start a new execution at that
 label.
 
-Code sections are just mapped pieces of memory that are executable.
+A natural optimization that occurs, is code blocks that are never reached, are
+never computationally evaluated. Code sections are just mapped pieces of memory
+that are executable.
 
 \subsubsection{Edit} Once a basic code block has been fully translated, if the
 block itself started with a label then it must notify and edit every block that
