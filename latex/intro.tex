@@ -1,0 +1,50 @@
+\section{Introduction}
+
+\subsection{Arguments for Binary Translation}
+
+Binary Translation is the process through which binary program which was meant for a
+specific hardware platform can be run natively in another system.  Normally, binary
+programs that cannot be run have to be interpreted instruction by instruction
+by an emulator in order to reproduce its behavior.  However, this approach is
+very slow, since the amount of native instructions executed for each foreign
+one can be exceedingly high.
+
+A way to speed up the execution of programs on arbitrary architectures is using
+binary translation alongside emulation.  This technique takes advantage of the
+fact that most architectures are composed of common commands, like moves and
+rudimentary binary operations.  Therefore, it is possible to create native
+executables that perform the same function as the original program.  The amount
+of code needed run is lower, and execution is faster when compared to pure emulation.
+
+Another use case for binary translation is software virtualization.  Some
+programs need to access resources that are not accessible, because they do not
+exist in the system.  Alternatively, the program does not have enough
+privileges to modify the component, like in the case of userspace applications
+attempting to change their page table register.
+
+Virtual Machines (VMs) are such a class of programs.  The kernel running in the
+VM is designed to have full access to the hardware, which in this case includes
+sensitive processor registers and emulated devices.  A translator has the
+responsibility of replacing code that attempts to do such accesses with
+alternative instructions that divert flow to the translator.  The program
+emulates the resource in such a way that the VM can keep executing, and diverts
+control back to it.  Popular emulators that employ binary translation, such as
+Bochs and QEMU, utilize exactly this kind of scheme in order to emulate devices
+like disks on demand.
+
+\subsection{Binary Translation Internals}
+
+Binary translation, much like all forms of compilation, hinges on the concept
+of basic code blocks.  Basic blocks are sequences of machine instructions that
+do not contain control flow commands like jumps and branches, and are the the
+smallest unit that binary translation works with.  More concisely, we can only
+jump to the start of basic blocks.  Programs are sectioned into many basic
+blocks.  The block cannot be accessed without
+
+The emulator then goes through the program, creating and then executing a
+sequence of native instructions corresponding to the current block.
+
+
+
+
+
