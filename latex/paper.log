@@ -1,12 +1,12 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016/Debian) (preloaded format=pdflatex 2018.10.22)  2 DEC 2018 23:29
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016/Debian) (preloaded format=pdflatex 2018.10.22)  2 DEC 2018 23:40
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
 **paper.tex
-(./paper.tex
+(/home/etsal/tmp/emulator_6502/latex/paper.tex
 LaTeX2e <2017/01/01> patch level 3
 Babel <3.9r> and hyphenation patterns for 3 language(s) loaded.
-(./IEEEtran.cls
+(/home/etsal/tmp/emulator_6502/latex/IEEEtran.cls
 Document Class: IEEEtran 2015/08/26 V1.8b by Michael Shell
 -- See the "IEEEtran_HOWTO" manual for usage information.
 -- http://www.michaelshell.org/tex/ieeetran/
@@ -117,7 +117,8 @@ LaTeX Font Info:    Font shape `OT1/ptm/bx/it' in size <24.09> not available
 \IEEEPARstartletwidth=\dimen125
 \c@IEEEbiography=\count93
 \@IEEEtranrubishbin=\box27
-) (./usenix.sty (/usr/share/texlive/texmf-dist/tex/latex/psnfss/mathptmx.sty
+) (/home/etsal/tmp/emulator_6502/latex/usenix.sty
+(/usr/share/texlive/texmf-dist/tex/latex/psnfss/mathptmx.sty
 Package: mathptmx 2005/04/12 PSNFSS-v9.2a Times w/ Math, improved (SPQR, WaS) 
 LaTeX Font Info:    Redeclaring symbol font `operators' on input line 28.
 LaTeX Font Info:    Overwriting symbol font `operators' in version `normal'
@@ -481,7 +482,8 @@ Package microtype Info: Loading configuration file microtype.cfg.
 
 (/usr/share/texlive/texmf-dist/tex/latex/microtype/microtype.cfg
 File: microtype.cfg 2016/05/14 v2.6a microtype main configuration file (RS)
-)) (./paper.aux)
+))
+(/home/etsal/tmp/emulator_6502/latex/paper.aux)
 \openout1 = `paper.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 47.
@@ -551,7 +553,8 @@ LaTeX Info: Redefining \ref on input line 47.
 LaTeX Info: Redefining \pageref on input line 47.
 LaTeX Info: Redefining \nameref on input line 47.
 
-(./paper.out) (./paper.out)
+(/home/etsal/tmp/emulator_6502/latex/paper.out)
+(/home/etsal/tmp/emulator_6502/latex/paper.out)
 \@outlinefile=\write3
 \openout3 = `paper.out'.
 
@@ -604,31 +607,38 @@ LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <8.91336> not available
 (Font)              Font shape `OT1/ptm/b/n' tried instead on input line 58.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <7.22707> not available
 (Font)              Font shape `OT1/ptm/b/n' tried instead on input line 58.
- (./abstract.tex)
-(./intro.tex [1{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}
+
+(/home/etsal/tmp/emulator_6502/latex/abstract.tex)
+(/home/etsal/tmp/emulator_6502/latex/intro.tex [1{/var/lib/texmf/fonts/map/pdft
+ex/updmap/pdftex.map}
 
 
 Non-PDF special ignored!
 
-]) (./problem.tex
-LaTeX Font Info:    Try loading font information for OMS+ptm on input line 28.
+]) (/home/etsal/tmp/emulator_6502/latex/problem.tex
+LaTeX Font Info:    Try loading font information for OMS+ptm on input line 48.
 
 (/usr/share/texlive/texmf-dist/tex/latex/psnfss/omsptm.fd
 File: omsptm.fd 
 )
 LaTeX Font Info:    Font shape `OMS/ptm/m/n' in size <10.03749> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 28.
-
-
-LaTeX Warning: `!h' float specifier changed to `!ht'.
-
-[2]) (./design.tex <./images/translator.png, id=91, 765.86125pt x 472.76625pt>
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 48.
+ [2])
+(/home/etsal/tmp/emulator_6502/latex/design.tex
+<./images/translator.png, id=100, 765.86125pt x 472.76625pt>
 File: ./images/translator.png Graphic file (type png)
 
 <use ./images/translator.png>
 Package pdftex.def Info: ./images/translator.png used on input line 1.
 (pdftex.def)             Requested size: 469.75499pt x 289.98125pt.
-) (./paper.bbl)
+) (/home/etsal/tmp/emulator_6502/latex/related.tex) (/home/etsal/tmp/emulator_6
+502/latex/paper.bbl [3]
+LaTeX Font Info:    Calculating math sizes for size <8.03> on input line 23.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <5.94223> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 23.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <4.81804> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 23.
+)
 
 ** Conference Paper **
 Before submitting the final camera ready copy, remember to:
@@ -640,33 +650,35 @@ Before submitting the final camera ready copy, remember to:
  uses only Type 1 fonts and that every step in the generation
  process uses the appropriate paper size.
 
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 67.
-[3] [4 <./images/translator.png>]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 67.
- (./paper.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 67.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 67.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 68.
+[4
+
+ <./images/translator.png>]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 68.
+ (/home/etsal/tmp/emulator_6502/latex/paper.aux)
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 68.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 68.
 Package rerunfilecheck Info: File `paper.out' has not changed.
-(rerunfilecheck)             Checksum: 7B6AFD362369D883EFD3A90D5540391C;605.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 67.
+(rerunfilecheck)             Checksum: D257A603643D598316F585803F97904D;699.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 68.
  ) 
 Here is how much of TeX's memory you used:
- 10743 strings out of 494945
- 170347 string characters out of 6181031
- 307067 words of memory out of 5000000
- 13725 multiletter control sequences out of 15000+600000
- 47818 words of font info for 168 fonts, out of 8000000 for 9000
+ 10795 strings out of 494945
+ 172338 string characters out of 6181031
+ 305153 words of memory out of 5000000
+ 13767 multiletter control sequences out of 15000+600000
+ 54997 words of font info for 185 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 44i,9n,42p,277b,1226s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 44i,9n,42p,339b,1226s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/share/texlive/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/share/texliv
 e/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texm
 f-dist/fonts/type1/urw/times/utmb8a.pfb></usr/share/texlive/texmf-dist/fonts/ty
 pe1/urw/times/utmr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/u
 tmri8a.pfb>
-Output written on paper.pdf (4 pages, 101368 bytes).
+Output written on paper.pdf (4 pages, 106271 bytes).
 PDF statistics:
- 142 PDF objects out of 1000 (max. 8388607)
- 128 compressed objects within 2 object streams
- 55 named destinations out of 1000 (max. 500000)
- 25174 words of extra memory for PDF output out of 29859 (max. 10000000)
+ 160 PDF objects out of 1000 (max. 8388607)
+ 146 compressed objects within 2 object streams
+ 60 named destinations out of 1000 (max. 500000)
+ 29286 words of extra memory for PDF output out of 29859 (max. 10000000)
 

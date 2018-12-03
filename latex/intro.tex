@@ -5,7 +5,7 @@
 Binary Translation is the process through which a binary program meant for a
 specific architecture can be run natively on another system.  Normally, binary
 programs that cannot be run have to be interpreted instruction by instruction
-with an emulator in order to reproduce its behavior.  However, this approach is
+with an emulator in order to reproduce their behavior.  However, this approach is
 very slow, since the amount of native instructions executed for each foreign
 one can be exceedingly high.
 
@@ -14,11 +14,11 @@ binary translation alongside emulation.  This technique takes advantage of the
 fact that most architectures are composed of common commands, like moves and
 rudimentary binary operations.  Therefore, it is possible to create native
 executables that perform the same function as the original program.  The amount
-of code needed run is lower, and execution is faster when compared to pure emulation.
+of code needed to run is lower, and execution is faster when compared to pure emulation.
 
 Another use case for binary translation is software virtualization.  Some
-programs need to access resources that are not accessible, because they do not
-exist in the system.  Alternatively, the program does not have enough
+programs need to access virtual resources that are not accessible, because they do not have  
+an equivalent in the host system.  Alternatively, the program does not have enough
 privileges to modify the component, like in the case of userspace applications
 attempting to change their page table register.
 
@@ -28,7 +28,7 @@ sensitive processor registers and emulated devices.  A translator has the
 responsibility of replacing code that attempts to do such accesses with
 alternative instructions.  The program
 emulates the resource in such a way that the VM can keep executing, and diverts
-control back to it.  Popular emulators that employ binary translation, such as
+control back to it when the privileged operation is finished.  Popular emulators that employ binary translation, such as
 Bochs\cite{lawton1996bochs} and QEMU\cite{bellard2005qemu}, utilize exactly this kind of scheme in order to emulate devices
 like disks on demand.
 
@@ -39,7 +39,7 @@ of basic code blocks.  Basic blocks are sequences of machine instructions that
 do not contain control flow commands like jumps and branches, and are the
 smallest unit that binary translation works with.  More concisely, we can only
 jump to the start of basic blocks. Programs are sectioned into multiple basic
-blocks, which can be organized and viewed as a graph. Where nodes are the code
+blocks, which can be organized and viewed as a graph. Nodes are the code
 blocks themselves and directed edges represent a connection (through label or pointer)
 from one code block to the other.  Nodes may have multiple edges to multiple nodes.
 
@@ -52,10 +52,11 @@ This is the fundamental principle behind compiler optimizations.
 An emulator that employs binary translation goes through the program, creating and 
 then executing a sequence of native instructions corresponding to the current block.
 The key insight is that program correctness is independent of the underlying
-platform, and is dependent only on creating the proper output for all inputs.
+platform, and is dependent only on producing the proper output for all inputs.
 Therefore, it is possible to create a native program that does exactly that, using 
 the original binary as a blueprint.
 
-
+Furthermore, many blocks are executed many times, meaning caching such blocks and
+interweaving them allows for translation to occur only once when revisiting sections of code.
 
 

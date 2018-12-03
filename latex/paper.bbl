@@ -8,4 +8,19 @@ K.~P. Lawton, ``Bochs: A portable pc emulator for unix/x,'' {\em Linux
 F.~Bellard, ``Qemu, a fast and portable dynamic translator.,'' in {\em USENIX
   Annual Technical Conference, FREENIX Track}, vol.~41, p.~46, 2005.
 
+\bibitem{bala2011dynamo}
+V.~Bala, E.~Duesterwald, and S.~Banerjia, ``Dynamo: a transparent dynamic
+  optimization system,'' {\em Acm Sigplan Notices}, vol.~46, no.~4, pp.~41--52,
+  2011.
+
+\bibitem{sridhar2006hdtrans}
+S.~Sridhar, J.~S. Shapiro, E.~Northup, and P.~P. Bungale, ``Hdtrans: an open
+  source, low-level dynamic instrumentation system,'' in {\em Proceedings of
+  the 2nd international conference on Virtual execution environments},
+  pp.~175--185, ACM, 2006.
+
+\bibitem{libtcg}
+``Libtcg.'' \url{https://github.com/S2E/libtcg}.
+\newblock Accessed: 2018-12-02.
+
 \end{thebibliography}
