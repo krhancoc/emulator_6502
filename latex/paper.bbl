@@ -1,0 +1,11 @@
+\begin{thebibliography}{1}
+
+\bibitem{lawton1996bochs}
+K.~P. Lawton, ``Bochs: A portable pc emulator for unix/x,'' {\em Linux
+  Journal}, vol.~1996, no.~29es, p.~7, 1996.
+
+\bibitem{bellard2005qemu}
+F.~Bellard, ``Qemu, a fast and portable dynamic translator.,'' in {\em USENIX
+  Annual Technical Conference, FREENIX Track}, vol.~41, p.~46, 2005.
+
+\end{thebibliography}
