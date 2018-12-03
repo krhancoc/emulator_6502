@@ -1,0 +1,18 @@
+\section{Related Work}
+
+Binary translators as a method have been primarily used for emulating full systems, normally for the same architecture as the host system.
+This means that a lot of work on binary translation has been done not on systems that turn one assembly language into another, but on mechanisms for deprivileging code in order to facilitate developing operating systems in userspace. 
+
+The Dynamo\cite{bala2011dynamo} system demonstrates an interesting use case of binary translation is in optimizing native code at runtime. The mechanism provides improvements even in heavily used software components that are supposed to be well optimized, such as static libraries. 
+
+HDTrans\cite{sridhar2006hdtrans} is a binary translator whose goal is instrumentation of native code. This work extensively outlines the issues that arise when building a binary translator, including some which are mentioned in the present paper, like the handling of conditional jumps.
+
+There are also translators whose end goal is virtualization, and which are combined with emulation in order to 
+Examples include Bochs\cite{lawton1996bochs}, which is x86 only, and QEMU\cite{bellard2005qemu}, which can perform translations from one assembly language to another, but can also perform deprivileging. 
+Recently, the binary translation generator of QEMU was spun off from the main project\cite{libtcg}, and can be used independently without the main emulator code.
+
+
+\section{Conclusion}
+
+In this paper, we have described the process 
+
