@@ -22,3 +22,4 @@ INX
 INX
 INX
 JMP start
+CMP 100

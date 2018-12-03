@@ -47,7 +47,9 @@ Looking for a perfect match instead of just a similar version was necessary beca
         "popq %%rcx\n"
         "popq %%rbx\n"
         "popq %%rax\n"
-        : [A] "+m" (A) , [X] "+m" (X), [Y] "+m" (Y) 
+        : [A] "+m" (A),
+          [X] "+m" (X), 
+          [Y] "+m" (Y) 
         : [code] "r" (code)
     );
 \end{lstlisting}
