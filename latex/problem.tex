@@ -1,4 +1,4 @@
-\section{Difficulties in Implementation}
+\section{Implementation}
 
 For the implementation of the binary translator we opted to expand on our existing emulator project, written in C++.
 The main idea was to have a translation cache in the emulator, which is queried for every basic block. 
@@ -80,3 +80,14 @@ not taken:
 taken:		
 	jmp not_taken_path
 \end{lstlisting}
+
+The main difficulty lies in the way we search for x86 basic blocks that should be linked together, because they originate from adjacent 6502 basic blocks. 
+Conditional branches are particularly tricky, because blocks that end with such instructions have two possible exit points. 
+
+When first executing the basic block it is necessary to find out which path should be taken. 
+There are two alternative designs that can resolve this problem.
+One includes storing an identifier in a specific area in memory, where in can be inspected by the C++ code.
+The other stores the flags register instead of an identifier, and does so just before executing the branch.
+The C code then inspects the branch instruction and the flags register, and basically replays the instruction in order to find out the result.
+The first approach is more straightforward, but is more complex to emit, and, as mentioned earlier, emitting binary code from C++ is extraordinarily unwieldy.
+

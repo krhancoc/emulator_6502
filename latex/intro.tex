@@ -29,7 +29,7 @@ responsibility of replacing code that attempts to do such accesses with
 alternative instructions.  The program
 emulates the resource in such a way that the VM can keep executing, and diverts
 control back to it.  Popular emulators that employ binary translation, such as
-Bochs and QEMU, utilize exactly this kind of scheme in order to emulate devices
+Bochs\cite{lawton1996bochs} and QEMU\cite{bellard2005qemu}, utilize exactly this kind of scheme in order to emulate devices
 like disks on demand.
 
 \subsection{Binary Translation Internals}
